@@ -1,0 +1,15 @@
+#lang racket
+(define D (lambda (expr) 
+    (cond 
+        ((number? expr) 0)
+        ((eq? 'e expr) 0)
+        ((eq? 'x expr) 1)        
+        ((eq? 'ln (car expr)) `(* ,(D e1) (^ ,e1 -1)))
+        (else 
+            (let ([sym (car expr)]
+                  [e1 (car (cdr expr))]
+                  [e2 (car (cdr (cdr expr)))]) 
+                (cond
+                    ((eq? '+ sym) `(+ ,(D e1) ,(D e2)))
+                    ((eq? '* sym) `(+ (* ,(D e1) ,e2) (* ,e1 ,(D e2))))
+                    ((eq? '^ sym) `(* ,expr ,(D `(* ,e2 (ln ,e1)))))))))))

@@ -1,0 +1,61 @@
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+/* color of nav bar */
+#nav-bar {
+  background: rgba(248, 248, 255, 0.2) !important;
+  height: 36px !important;
+}
+
+/* menubar text color */
+#main-menubar > menu {
+  color: #F8F8FF !important;
+  text-shadow: 1px 1px 2px rgba(104, 208, 255, 0.5) !important;
+}
+
+/* background color of fav bar */
+#PersonalToolbar {
+  background: rgba(248, 248, 255, 0.2) !important;
+}
+
+/* text color of fav bar */
+#PersonalToolbar .bookmark-item {
+  color: #F8F8FF !important;
+  text-shadow: 1px 1px 2px rgba(104, 208, 255, 1) !important;
+}
+
+/* flat notification */
+notification[label][type="critical"] {
+  background: darkred !important;
+}
+
+/*历史菜单选项隐藏*/
+#ctraddon_history_showAllHistory,#ctraddon_history_showAllHistory+menuseparator,#ctraddon_history_recentlyClosedWindowsMenu,#ctraddon_history_recentlyClosedWindowsMenu+menuseparator,#ctraddon_history_recentlyClosedTabsMenu,#ctraddon_history_restoreLastSession,#ctraddon_history_sync-tabs,#sanitizeSeparator,#ctraddon_history_sanitizeHistory,#ctraddon_history_showAllHistory,#sanitizeSeparator {
+    display:none !important;
+}
+
+
+/*下拉栏隐藏*/
+.toolbarbutton-menubutton-dropmarker, .toolbarbutton-menu-dropmarker, .urlbar-history-dropmarker {
+    display: none !important;
+}
+
+/*书签文件夹下拉过长显示滚动条 Show ScrollBar On Bookmark Folder*/
+@-moz-document url(chrome://browser/content/browser.xul) {
+
+.bookmark-item[container="true"]  scrollbox {
+    overflow-y:auto !important;
+}
+
+}
+
+/*"paste & go" 置顶*/
+.urlbar-textbox-container menuitem[anonid="paste-and-go"]:not([disabled="true"]) {
+    -moz-box-ordinal-group: 0 !important;
+}
+.searchbar-textbox menuitem[anonid="paste-and-search"]:not([disabled="true"]) {
+    -moz-box-ordinal-group: 0 !important;
+}
+#context-pasteandgo-forms:not([disabled="true"]) {
+    -moz-box-ordinal-group: 0 !important;
+}
+

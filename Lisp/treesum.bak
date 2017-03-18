@@ -1,0 +1,4 @@
+(define tree-sum (lambda (tree) 
+    (cond 
+        [(number? tree) tree]
+        [else (tree-sum (car tree) (car (cdr tree)))])))

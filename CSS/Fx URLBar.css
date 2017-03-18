@@ -1,0 +1,110 @@
+@namespace url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+/* remove element */
+.urlbar-history-dropmarker,
+.search-go-button,
+#identity-box {
+    display: none !important;
+}
+/* button color */
+#back-button > .toolbarbutton-icon,
+#forward-button > .toolbarbutton-icon {
+    filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='invert'>\
+                            <feColorMatrix in='SourceGraphic' type='matrix' values=\
+                            '0.0 0.0 0.0 0.0 0.4 \
+                             0.0 0.0 0.0 0.0 0.8 \
+                             0.0 0.0 0.0 0.0 1.2 \
+                             0.0 0.0 0.0 1.0 0.0'/></filter></svg>#invert") !important;
+}
+#urlbar-reload-button > .toolbarbutton-icon,
+#reader-mode-button {
+    filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='invert'>\
+                            <feColorMatrix in='SourceGraphic' type='matrix' values=\
+                            '0.0 0.0 0.0 0.0 0.16 \
+                             0.0 0.0 0.0 0.0 0.11 \
+                             0.0 0.0 0.0 0.0 0.33 \
+                             0.0 0.0 0.0 0.8 0.0'/></filter></svg>#invert") !important;
+}
+#reader-mode-button:hover {
+  filter: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='invert'>\
+                            <feColorMatrix in='SourceGraphic' type='matrix' values=\
+                            '0.0 0.0 0.0 0.0 0.24 \
+                             0.0 0.0 0.0 0.0 0.18 \
+                             0.0 0.0 0.0 0.0 0.42 \
+                             0.0 0.0 0.0 0.8 0.0'/></filter></svg>#invert") !important;
+}
+
+/* remove border which is next to relaod button */
+#urlbar > .chromeclass-toolbar-additional {
+    border: 0 !important;
+}
+/* remove background of back & forward button */
+#back-button > .toolbarbutton-icon,
+#forward-button > .toolbarbutton-icon {
+  background: transparent !important;
+  border: 0 !important;
+  height: 28px !important;
+  opacity: 0.5 !important;
+    box-shadow: unset !important;
+}
+/* back & forward button animation */
+#back-button, #forward-button {
+    height: 28px !important;
+    padding: 0px !important;
+    transform: translateX(12px);
+    opacity: 0.4 !important;
+}
+#back-button:not([disabled="true"]),
+#forward-button:not([disabled="true"]) {
+    opacity: 0.65 !important;
+}
+
+#back-button:not([disabled="true"]):hover,
+#forward-button:not([disabled="true"]):hover {
+    opacity: 0.8 !important;
+}
+
+
+#back-button:not([disabled="true"]):active,
+#forward-button:not([disabled="true"]):active {
+    opacity: 1 !important;
+}
+
+/* Url & search bar */
+#urlbar, #searchbar, .searchbar-textbox  {
+  border: 0 !important;
+  font-size: 12px !important;
+  background: transparent !important;
+  color: #F8F8FF !important;
+  text-shadow: 1px 1px 2.5px #6CF !important;
+}
+
+/* location adjust */
+#urlbar {
+    padding-left: 2px !important;
+    transform: translateX(24px);
+    margin-right: 24px;
+}
+
+#reader-mode-button {
+    transform: translateY(1px) !important;
+    margin-right: 12px !important;
+}
+
+#forward-button {
+    padding: 1px !important;
+}
+
+/* Reload button spin animation */
+#urlbar-reload-button {
+    padding: 0;
+    margin: 0px !important;
+    transform: translateX(-8px) !important;
+}
+
+#urlbar-reload-button:hover > .toolbarbutton-icon {
+    transition: transform ease-out 300ms;
+  transform: rotate(360deg);
+}
+
