@@ -5,6 +5,9 @@ def parser(s):
         t = ""
         while True:
             if s[index] == "(":
+                if t != "":
+                    result.append(t)
+                t = ""
                 x, index = _f(index + 1)
                 result.append(x)
             c = s[index]
@@ -21,4 +24,4 @@ def parser(s):
             index += 1
     return _f(1)[0]
 
-print("(+ 1 2 3 4 (- 1 2 3 4 5) (+(+(+))))")
+print(parser("(+(+ 1 1) 1)"))
