@@ -1,10 +1,7 @@
 import os
 import os.path
-import threading
+import multiprocessing
 import time
-
-threadCount = 0
-
 
 def getDir(dir):
     cmd = f'adb shell "find \'{dir}\' -maxdepth 1 -type d | cut -c {len(dir.encode("utf8"))+1}-"'
@@ -17,31 +14,25 @@ def getFile(dir):
 
 
 def pullFile(file, dist):
-    while threadCount > 50:
-        time.sleep(1)
-    threading.Thread(target=pullFile0, args=(file, dist)).start()
-
-
-def pullFile0(file, dist):
-    global threadCount
-    threadCount += 1
     cmd = f'adb pull "{file}" "{dist}"'
     os.popen(cmd).read()
     print(file, "->", dist)
     threadCount -= 1
 
-
-def backup(dir, dist, overwrite=True):
+def backup(pool, dir, dist, overwrite=True):
     for f in getFile(dir):
         i = f"{dir}{f}"
         o = f"{dist}{f}"
         if overwrite or not os.path.isfile(o):
             os.makedirs(os.path.split(o)[0], exist_ok=True)
-            pullFile(i, o)
+            pool.apply_async(pullFile, (i, o))
     for d in getDir(dir):
-        backup(f"{dir}{d}", f"{dist}{d}", overwrite)
+        backup(pool, f"{dir}{d}", f"{dist}{d}", overwrite)
 
-backup("/sdcard/", "sdcard/", False)
+if __name__ == '__main__':
+    multiprocessing.freeze_support()
+    pool = multiprocessing.Pool(16)
+    backup(pool, "/sdcard/", "sdcard/", True)
 #             exist 
 # overwrite |   0   |   1   |
 #     0     |   1   |   0   |
