@@ -23,7 +23,6 @@ def radiationExposure2(start, stop, step):
         return f(start) + radiationExposure(start + step, stop, step) 
 
 def f(x):
-    import math
     return 400*math.e**(math.log(0.5)/3.66 * x)
 
 print(radiationExposure2(1, 100, -3))
