@@ -1,13 +1,16 @@
 import interp
 import functools
 
+funcId = 0
 class Func():
     def __init__(self, args, body, scope):
         # (lambda (<args>) <body>)
         self.args_namelist = args
         self.args_len = len(args)
         self.body = body
-        self.closure = scope
+        global funcId
+        funcId += 1
+        self.closure = (funcId, scope)
         self.runtime = 0
 
     def invoke(self, args, env, scope):
@@ -19,15 +22,17 @@ class Func():
                 self.args_namelist[i], # var name
                 interp.interp0(args[i], env, scope)[0]) # value
         return interp.interp0(self.body, env, (self.runtime, self.closure))
-        pass
 
 class PreDefFunc(Func):
     def __init__(self, func, scope=None):
         self.func = func
-        self.closure = scope
+        global funcId
+        funcId += 1
+        self.closure = (funcId, scope)
         self.runtime = 0
 
     def invoke(self, args, env, scope):
+
         self.runtime += 1
         return (self.func(args, env, (self.runtime, scope)), None)
 
@@ -49,6 +54,7 @@ class Env():
 
     def set(self, scope, name, val):
         # print("set:", (name, scope))
+        assert (name, scope) not in self.env
         self.env[(name, scope)] = val
 
 def is_int(s):

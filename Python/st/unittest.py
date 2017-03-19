@@ -30,7 +30,7 @@ def unittest():
                 (def f (lambda () x))\
                 (def f2 (lambda (x) (f)))\
                 (def x 3)\
-                (f2 2))", 3, # 和預想的一樣, 重新綁定會改變閉包
+                (f2 2))", AssertionError, # 和預想的一樣, 重新綁定會改變閉包 ## 禁止重新綁定好還是當成feature好呢...
             "(do\
                 (def F (lambda (x)\
                     (if (= x 0)\
@@ -55,22 +55,23 @@ def unittest():
                             [y 1])\
                            (+ x y))]\
                    [y x])\
-                  (+ x y))", 6, # 它說是6, 那就6吧, 誰會去手算這玩意... 反正隔壁Scheme也說是6
+                  (+ x y))", 6, # 它說是6, 那就6吧, 誰會去手算這玩意... 反正隔壁Scheme也說是6 
            ]
-    env0 = env.Env()
-    env.init_env(env0)
     for i in range(0, len(data), 2):
         try:
-            res = interp.interp0(interp.parser(data[i]), env0, None)[0]
-        except Exception:
-            print(f"Exception at Test{int(i/2)}")
-            traceback.print_exception(*sys.exc_info())
+            res = interp.interp(interp.parser(data[i]))
+        except Exception as e:
+            if isinstance(e, data[i + 1]):
+                print(f"Test{int(i/2)} Passed")
+            else:
+                print(type(e))
+                print(f"Exception at Test{int(i/2)}")
+                traceback.print_exception(*sys.exc_info())
             continue
         if res == data[i + 1]:
             print(f"Test{int(i/2)} Passed")
         else:
             print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
-    print(len(env0.env)) # 64 orz
 
 if __name__ == '__main__':
     unittest()
