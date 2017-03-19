@@ -119,10 +119,21 @@ def _if(args, env, scope):
     else:
         return interp.interp0(args[2], env, scope)[0]
 
+def _let(args, env, scope):
+    # (let ((<name> <value>) ... ) <body>)
+    for i in args[0]:
+        env.set(
+            scope, # scope
+            i[0], # var name
+            interp.interp0(i[1], env, scope)[0]) # value
+    return interp.interp0(args[1], env, scope)[0]
+
+
 def init_env(env):
     env.set(None, "do", PreDefFunc(_do))
     env.set(None, "print", PreDefFunc(_print))
     env.set(None, "def", PreDefFunc(_def))
+    env.set(None, "let", PreDefFunc(_let))
     env.set(None, "lambda", PreDefFunc(_lambda))
     env.set(None, "if", PreDefFunc(_if))
     env.set(None, "+", PreDefFunc(_add))

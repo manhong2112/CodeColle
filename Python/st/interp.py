@@ -11,14 +11,14 @@ def parser(expr):
         result = []
         buffer = []
         while True:
-            if expr[index] == "(":
+            if expr[index] == "(" or expr[index] == "[":
                 if buffer:
                     result.append(''.join(buffer))
                 buffer = []
                 sub_res, index = _f(index + 1)
                 result.append(sub_res)
             char = expr[index]
-            if char == ")":
+            if char == ")" or char == "]":
                 if buffer:
                     result.append(''.join(buffer))
                 return result, index + 1

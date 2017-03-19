@@ -48,7 +48,10 @@ def unittest():
                             (if (= x 0)\
                                 1\
                                 (* x (f (- x 1)))))))\
-                    5))", 120] # Y算子遞歸
+                    5))", 120, # Y算子遞歸
+            "(let ([x 1] [y 1]) (+ x y))", 2,
+            "(let ([x 2] [y x]) (+ x y))", 4
+           ]
     env0 = env.Env()
     env.init_env(env0)
     for i in range(0, len(data), 2):
