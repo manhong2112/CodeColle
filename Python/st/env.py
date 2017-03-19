@@ -94,7 +94,11 @@ def _do(args, env, scope):
 
 def _def(args, env, scope):
     # (def <name> <val>)
-    env.set(scope[1], str(args[0]), interp.interp0(args[1], env, scope[1])[0])
+    # (def (<name> <args>) <body>) => (def <name> (lambda (<args>) <body>))
+    if isinstance(args[0], list):
+        env.set(scope[1], args[0][0], _lambda((args[0][1:], args[1]), env, scope[1]))
+    else:
+        env.set(scope[1], str(args[0]), interp.interp0(args[1], env, scope[1])[0])
 
 def _lambda(args, env, scope):
     # (lambda (<fun args>) <fun body>)

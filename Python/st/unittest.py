@@ -2,6 +2,7 @@ import traceback
 import sys
 import env
 import interp
+
 def unittest():
     """Simple Unit Test"""
     data = ["(print 1)", None,
@@ -18,6 +19,7 @@ def unittest():
             "(= 1 1)", True,
             "(= 1 2)", False,
             "(if #t 1 2)", 1,
+            "(do (def (f x) x) (f 1))", 1,
             "(do\
                 (def x 1)\
                 (def f (lambda () x))\
@@ -60,7 +62,7 @@ def unittest():
             print(f"Test{int(i/2)} Passed")
         else:
             print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
-    print(len(env0.env)) # 63 orz
+    print(len(env0.env)) # 64 orz
 
 if __name__ == '__main__':
     unittest()
