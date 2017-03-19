@@ -3,9 +3,7 @@ import sys
 import env
 import interp
 
-def unittest():
-    """Simple Unit Test"""
-    data = ["(print 1)", None,
+data = ["(print 1)", None,
             "(do (+ 1 3) (+ 1 1))", 2,
             "(do (+ 1 2 3 4 5 6 7 8 9 10))", 55,
             "(+(+ 1                1)1)", 3,
@@ -57,6 +55,12 @@ def unittest():
                    [y x])\
                   (+ x y))", 6, # 它說是6, 那就6吧, 誰會去手算這玩意... 反正隔壁Scheme也說是6 
            ]
+
+def unittest():
+    """
+    Simple Unit Test
+    Same Env
+    """
     for i in range(0, len(data), 2):
         env0 = env.Env()
         env.init_env(env0)
@@ -75,5 +79,30 @@ def unittest():
         else:
             print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
 
+def unittest2():
+    """
+    Simple Unit Test type 2
+    Individual Env
+    """
+    for i in range(0, len(data), 2):
+        try:
+            res = interp.interp(interp.parser(data[i]))
+        except Exception as e:
+            if isinstance(e, data[i + 1]):
+                print(f"Test{int(i/2)} Passed")
+            else:
+                print(type(e))
+                print(f"Exception at Test{int(i/2)}")
+                traceback.print_exception(*sys.exc_info())
+            continue
+        if res == data[i + 1]:
+            print(f"Test{int(i/2)} Passed")
+        else:
+            print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
+
+
 if __name__ == '__main__':
+    print("Type1:")
     unittest()
+    print("Type2:")
+    unittest2()
