@@ -14,6 +14,7 @@ def unittest():
             "((lambda (x) ((lambda (x) x) x)) ((lambda (x) x) 1))", 1,
             "(do (def x (lambda () 1)) (x))", 1,
             "((lambda () 1))", 1,
+            "(((lambda (x) (lambda (y) (+ x y))) 1) 2)", 3,
             "(= 1 1)", True,
             "(= 1 2)", False,
             "(if #t 1 2)", 1,
@@ -59,6 +60,7 @@ def unittest():
             print(f"Test{int(i/2)} Passed")
         else:
             print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
+    print(len(env0.env)) # 63 orz
 
 if __name__ == '__main__':
     unittest()
