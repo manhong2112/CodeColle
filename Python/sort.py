@@ -26,20 +26,25 @@ def quick_sort(arr):
     return quick_sort(b) + [a] + quick_sort(c)
 
 
-def quick_sort_inplace(arr):
-    def swap(x, y):
-        arr[x], arr[y] = arr[y], arr[x]
-
-    def _f(start, end):
-        i = start
-        if(start >= end):
-            return
-        while i+1 < end:
-            if arr[i] > arr[i+1]:
-                swap(i, i+1)
-            i += 1
-        _f(start, i), _f(i+1, end)
-    _f(0, len(arr))
+def quicksort_inplace_iter(arr):
+    stack = [(0, len(arr))]
+    while stack:
+        s, e = stack.pop()
+        s1, e1 = s, e
+        if s >= e:
+            continue
+        i = s
+        x = arr[e-1]
+        while s+1 < e1:
+            if arr[s] > x:
+                swap(arr, s, e1 - 1)
+                e1 -= 1
+            else:
+                swap(arr, s, s1)
+                s1 += 1
+            s += 1
+        stack.append((i, s))
+        stack.append((s+1, e))
 
 
 def random_arr(length):
