@@ -34,8 +34,18 @@ def unittest():
                         1\
                         (* x (F (- x 1)))\
                     )\
-                )) (F 5))", 120 # 遞歸成功, 耶比~
-           ]
+                )) (F 5))", 120, # 遞歸成功, 耶比~
+            "(do\
+                (def Y (lambda (f) \
+                            ((lambda (u) (u u))\
+                                (lambda (g)\
+                                (f (lambda (x) ((g g) x)))))))\
+                ((Y (lambda (f)\
+                        (lambda (x)\
+                            (if (= x 0)\
+                                1\
+                                (* x (f (- x 1)))))))\
+                    5))", 120] # Y算子遞歸
     env0 = env.Env()
     env.init_env(env0)
     for i in range(0, len(data), 2):
