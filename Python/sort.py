@@ -1,6 +1,6 @@
 import random
 import timeit
-
+import multiprocessing
 
 def printf(string, *obj):
     return print(string.format(*obj))
@@ -14,7 +14,6 @@ def bubble_sort(arr):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
     return arr
 
-
 def quick_sort(arr):
     if len(arr) <= 1:
         return arr
@@ -25,14 +24,16 @@ def quick_sort(arr):
         (b if i < a else c).append(i)
     return quick_sort(b) + [a] + quick_sort(c)
 
+def swap(arr, x, y):
+    arr[x], arr[y] = arr[y], arr[x]
 
 def quicksort_inplace_iter(arr):
     stack = [(0, len(arr))]
     while stack:
         s, e = stack.pop()
-        s1, e1 = s, e
         if s >= e:
             continue
+        s1, e1 = s, e
         i = s
         x = arr[e-1]
         while s+1 < e1:
