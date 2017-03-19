@@ -31,8 +31,9 @@ def parser(expr):
 
 class Func():
     def __init__(self, func, scope):
+        # TODO
         self.args_namelist = []
-        self.args_len = len(args_namelist)
+        self.args_len = len(self.args_namelist)
         self.func = func
         self.closure = scope
         self.runtime = 0
@@ -87,13 +88,8 @@ def is_float(s):
 
 def interp0(expr, env, scope, scopeLevel=0):
     if isinstance(expr, list):
-        lst = []
-        for i in range(0, len(expr)):
-            if expr[i][0] == "'":
-                lst.append(expr[i])
-            else:
-                lst.append(interp0(expr[i], env, scope, scopeLevel)[0])
-        return lst[0].invoke(lst[1:], env, scope)
+        fun = interp0(expr[0], env, scope, scopeLevel)[0]
+        return fun.invoke(expr[1:], env, scope)
     elif is_int(expr):
         return (int(expr), None)
     elif is_float(expr):
@@ -103,32 +99,62 @@ def interp0(expr, env, scope, scopeLevel=0):
 
 def interp(expr):
     env = Env()
-    env.set(None, "+", PreDefFunc(lambda x, env, scope: x[0] + x[1]))
-    env.set(None, "-", PreDefFunc(lambda x, env, scope: x[0] - x[1]))
-    env.set(None, "*", PreDefFunc(lambda x, env, scope: x[0] * x[1]))
-    env.set(None, "/", PreDefFunc(lambda x, env, scope: x[0] / x[1]))
+    init_env(env)
+    return interp0(expr, env, None)[0]
+
+def init_env(env):
+    def _add(args, env, scope):
+        args[0] = interp0(args[0], env, scope)[0]
+        return functools.reduce(lambda x, y: x + interp0(y, env, scope)[0], args)
+    def _sub(args, env, scope):
+        args[0] = interp0(args[0], env, scope)[0]
+        return functools.reduce(lambda x, y: x - interp0(y, env, scope)[0], args)
+    def _mul(args, env, scope):
+        args[0] = interp0(args[0], env, scope)[0]
+        return functools.reduce(lambda x, y: x * interp0(y, env, scope)[0], args)
+    def _div(args, env, scope):
+        args[0] = interp0(args[0], env, scope)[0]
+        return functools.reduce(lambda x, y: x / interp0(y, env, scope)[0], args)
     def _do(args, env, scope):
-        return functools.reduce(lambda x, y: interp0(y, env, scope), args)[0]
-    env.set(None, "do", PreDefFunc(_do))
+        res = None
+        for i in args:
+            res = interp0(i, env, scope)
+        return res[0]
     def _def(args, env, scope):
-        env.set(scope, str(args[0]), interp0(args[1], env, scope[1])[0])
-    env.set(None, "def", PreDefFunc(_def))
+        env.set(scope[1], str(args[0]), interp0(args[1], env, scope[1])[0])
+    def _defn(args, env, scope):
+        env.set(scope[1], str(args[0]), interp0(args[1], env, scope[1])[0])
     def _print(args, env, scope):
         res = map(lambda y: str(interp0(y, env, scope)[0]), args)
         print(" ".join(res))
-        return None
+
+    env.set(None, "defn", PreDefFunc(_defn))
+    env.set(None, "do", PreDefFunc(_do))
     env.set(None, "print", PreDefFunc(_print))
-    return interp0(expr, env, None)[0]
+    env.set(None, "def", PreDefFunc(_def))
+
+    env.set(None, "+", PreDefFunc(_add))
+    env.set(None, "-", PreDefFunc(_sub))
+    env.set(None, "*", PreDefFunc(_mul))
+    env.set(None, "/", PreDefFunc(_div))
+
 
 def unittest():
     """Simple Unit Test"""
     data = ["(do (print 1 1) (+ 1 1))", 2,
             "(+(+ 1             1)    1)", 3,
             "(* (+ (+ 2 2) (+ 2 2)) (+ (+ 2 2) (+ 2 2)))", 64,
-            "(do (def 'x (do (def 'x 2) (print 'x) 1)) 'x)", 1]
+            "(do (def x 1) x)", 1,
+            "(do (def x (do (def x 2) (print x) 1)) x)", 1,
+            ]
 
     for i in range(0, len(data), 2):
-        res = interp(parser(data[i]))
+        try:
+            res = interp(parser(data[i]))
+        except Exception as e:
+            print(f"Exception at Test{int(i/2)}")
+            print("--", e)
+            continue
         if res == data[i + 1]:
             print(f"Test{int(i/2)} Passed")
         else:
