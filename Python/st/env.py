@@ -91,6 +91,10 @@ def _div(args, env, scope):
     args[0] = interp.interp0(args[0], env, scope)[0]
     return functools.reduce(lambda x, y: x / interp.interp0(y, env, scope)[0], args)
 
+def _mod(args, env, scope):
+    args[0] = interp.interp0(args[0], env, scope)[0]
+    return functools.reduce(lambda x, y: x % interp.interp0(y, env, scope)[0], args)
+
 def _do(args, env, scope):
     # (do ...)
     res = None
@@ -146,6 +150,7 @@ def init_env(env):
     env.set(None, "-", PreDefFunc(_sub))
     env.set(None, "*", PreDefFunc(_mul))
     env.set(None, "/", PreDefFunc(_div))
+    env.set(None, "%", PreDefFunc(_mod))
     env.set(None, "=", PreDefFunc(_eq))
     env.set(None, "#t", True)
     env.set(None, "#f", False)

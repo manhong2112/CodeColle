@@ -54,6 +54,13 @@ data = ["(print 1)", None,
                            (+ x y))]\
                    [y x])\
                   (+ x y))", 6, # 它說是6, 那就6吧, 誰會去手算這玩意... 反正隔壁Scheme也說是6 
+            "(do\
+                (def (gcd a b)\
+                    (if (= b 0)\
+                        a\
+                    (gcd b (% a b))))\
+                (gcd 4 8)\
+                )", 4
            ]
 
 def unittest():
