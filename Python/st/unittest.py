@@ -61,7 +61,7 @@ def unittest():
         env0 = env.Env()
         env.init_env(env0)
         try:
-            res = interp.interp0(interp.parser(data[i]), )
+            res = interp.interp0(interp.parser(data[i]), env0, None)[0]
         except Exception as e:
             if isinstance(e, data[i + 1]):
                 print(f"Test{int(i/2)} Passed")
