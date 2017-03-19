@@ -106,12 +106,12 @@ def _def(args, env, scope):
     # (def <name> <val>)
     # (def (<name> <args>) <body>) => (def <name> (lambda (<args>) <body>))
     if isinstance(args[0], list):
-        env.set(scope[1], args[0][0], _lambda((args[0][1:], args[1]), env, scope[1]))
+        env.set(scope[1], args[0][0], _fn((args[0][1:], args[1]), env, scope[1]))
     else:
         env.set(scope[1], str(args[0]), interp.interp0(args[1], env, scope[1])[0])
 
-def _lambda(args, env, scope):
-    # (lambda (<fun args>) <fun body>)
+def _fn(args, env, scope):
+    # (fn (<fun args>) <fun body>)
     return Func(args[0], args[1], scope)
 
 def _print(args, env, scope):
@@ -144,7 +144,7 @@ def init_env(env):
     env.set(None, "print", PreDefFunc(_print))
     env.set(None, "def", PreDefFunc(_def))
     env.set(None, "let", PreDefFunc(_let))
-    env.set(None, "lambda", PreDefFunc(_lambda))
+    env.set(None, "fn", PreDefFunc(_fn))
     env.set(None, "if", PreDefFunc(_if))
     env.set(None, "+", PreDefFunc(_add))
     env.set(None, "-", PreDefFunc(_sub))
