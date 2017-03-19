@@ -58,8 +58,10 @@ def unittest():
                   (+ x y))", 6, # 它說是6, 那就6吧, 誰會去手算這玩意... 反正隔壁Scheme也說是6 
            ]
     for i in range(0, len(data), 2):
+        env0 = env.Env()
+        env.init_env(env0)
         try:
-            res = interp.interp(interp.parser(data[i]))
+            res = interp.interp0(interp.parser(data[i]), )
         except Exception as e:
             if isinstance(e, data[i + 1]):
                 print(f"Test{int(i/2)} Passed")
