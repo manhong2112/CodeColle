@@ -50,7 +50,12 @@ def unittest():
                                 (* x (f (- x 1)))))))\
                     5))", 120, # Y算子遞歸
             "(let ([x 1] [y 1]) (+ x y))", 2,
-            "(let ([x 2] [y x]) (+ x y))", 4
+            "(let ([x 2] [y x]) (+ x y))", 4,
+            "(let ([x (let ([x (let ([x 1] [y 1]) (+ x y))]\
+                            [y 1])\
+                           (+ x y))]\
+                   [y x])\
+                  (+ x y))", 6, # 它說是6, 那就6吧, 誰會去手算這玩意... 反正隔壁Scheme也說是6
            ]
     env0 = env.Env()
     env.init_env(env0)
