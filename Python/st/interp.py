@@ -8,16 +8,18 @@ import functools
 # parser str to list
 def parser(expr):
     length = len(expr)
+    def value_parser(s):
+        if is_quote_by(s, '"') or is_quote_by(s, "'"):
+            return env.String(''.join(s[1:-1]))
+        else:
+            return ''.join(s)
     def _f(index):
         result = []
         buffer = []
         while index < length:
             if expr[index] == "(" or expr[index] == "[":
                 if buffer:
-                    if is_quote_by(buffer, '"') or is_quote_by(buffer, "'"):
-                        result.append(env.String(''.join(buffer[1:-1])))
-                    else:
-                        result.append(''.join(buffer))
+                    result.append(value_parser(buffer))
                     buffer = []
                 sub_res, index = _f(index + 1)
                 result.append(sub_res)
@@ -26,25 +28,16 @@ def parser(expr):
             char = expr[index]
             if char == ")" or char == "]":
                 if buffer:
-                    if is_quote_by(buffer, '"') or is_quote_by(buffer, "'"):
-                        result.append(env.String(''.join(buffer[1:-1])))
-                    else:
-                        result.append(''.join(buffer))
+                    result.append(value_parser(buffer))
                 return result, index + 1
             elif char == " ":
                 if buffer:
-                    if is_quote_by(buffer, '"') or is_quote_by(buffer, "'"):
-                        result.append(env.String(''.join(buffer[1:-1])))
-                    else:
-                        result.append(''.join(buffer))
+                    result.append(value_parser(buffer))
                     buffer = []
             else:
                 buffer.append(char)
             index += 1
-        if is_quote_by(buffer, '"') or is_quote_by(buffer, "'"):
-            return env.String(''.join(buffer[1:-1])), index
-        else:
-            return ''.join(buffer), index
+        return value_parser(buffer), index
     return _f(0)[0]
 
 def is_int(s):

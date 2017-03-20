@@ -107,6 +107,25 @@ def unittest2():
         else:
             print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
 
+def unittest_parser():
+    """Parser Unit Test""" # 一改parser就出一堆bug了, 不加不行啊orz
+    data = ["(+ 1 2)", ["+", "1", "2"], "_", "_"]
+    for i in range(0, len(data), 2):
+        try:
+            res = interp.parser(data[i])
+        except Exception as e0:
+            if isinstance(data[i + 1], type) and isinstance(e0, data[i + 1]):
+                print(f"Test{int(i/2)} Passed")
+            else:
+                print(f"Exception at Test{int(i/2)}")
+                traceback.print_exception(*sys.exc_info())
+            continue
+        if res == data[i + 1]:
+            print(f"Test{int(i/2)} Passed")
+        else:
+            print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
+
+    pass
 
 if __name__ == '__main__':
     print("=" * 16)
@@ -116,3 +135,7 @@ if __name__ == '__main__':
     print("Type2:")
     unittest2()
     print("=" * 16)
+    print("Parser:")
+    unittest_parser()
+    print("=" * 16)
+    
