@@ -66,54 +66,34 @@ data = ["(print 1)", None,
         )", 4,
         "_", KeyError]
 
-def unittest():
+def unittest1():
     """
     Simple Unit Test
     same env
     """
     env0 = env.Env()
-    for i in range(0, len(data), 2):
-        
-        try:
-            res = interp.interp0(interp.parser(data[i]), env0, None)[0]
-        except Exception as e0:
-            if isinstance(data[i + 1], type) and isinstance(e0, data[i + 1]):
-                print(f"Test{int(i/2)} Passed")
-            else:
-                print(f"Exception at Test{int(i/2)}")
-                traceback.print_exception(*sys.exc_info())
-            continue
-        if res == data[i + 1]:
-            print(f"Test{int(i/2)} Passed")
-        else:
-            print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
+    def _fun(e, y):
+        return interp.interp0(interp.parser(y), e, None)[0]
+    unittest(env.Env, _fun, data)
 
 def unittest2():
     """
-    Simple Unit Test type 2
+    Unit Test
     Individual Env
     """
-    for i in range(0, len(data), 2):
-        try:
-            res = interp.interp(interp.parser(data[i]))
-        except Exception as e0:
-            if isinstance(data[i + 1], type) and isinstance(e0, data[i + 1]):
-                print(f"Test{int(i/2)} Passed")
-            else:
-                print(f"Exception at Test{int(i/2)}")
-                traceback.print_exception(*sys.exc_info())
-            continue
-        if res == data[i + 1]:
-            print(f"Test{int(i/2)} Passed")
-        else:
-            print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
+    unittest(lambda:None, lambda _, y: interp.interp(interp.parser(y)), data)
 
 def unittest_parser():
     """Parser Unit Test""" # 一改parser就出一堆bug了, 不加不行啊orz
     data = ["(+ 1 2)", ["+", "1", "2"], "_", "_"]
+    unittest(lambda:None, lambda _, y: interp.parser(y), data)
+
+def unittest(setup, fun, data):
+    """UnitTest"""
+    s = setup()
     for i in range(0, len(data), 2):
         try:
-            res = interp.parser(data[i])
+            res = fun(s, data[i])
         except Exception as e0:
             if isinstance(data[i + 1], type) and isinstance(e0, data[i + 1]):
                 print(f"Test{int(i/2)} Passed")
@@ -126,12 +106,11 @@ def unittest_parser():
         else:
             print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
 
-    pass
 
 if __name__ == '__main__':
     print("=" * 16)
     print("Type1:")
-    unittest()
+    unittest1()
     print("=" * 16)
     print("Type2:")
     unittest2()
