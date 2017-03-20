@@ -66,6 +66,11 @@ data = ["(print 1)", None,
         )", 4,
         "_", KeyError]
 
+test_list = []
+def Test(fun):
+    test_list.append((fun.__name__, fun))
+
+@Test
 def unittest1():
     """
     Simple Unit Test
@@ -76,17 +81,19 @@ def unittest1():
         return interp.interp0(interp.parser(y), e, None)[0]
     unittest(env.Env, _fun, data)
 
+@Test
 def unittest2():
     """
     Unit Test
     Individual Env
     """
-    unittest(lambda:None, lambda _, y: interp.interp(interp.parser(y)), data)
+    unittest(lambda: None, lambda _, y: interp.interp(interp.parser(y)), data)
 
+@Test
 def unittest_parser():
     """Parser Unit Test""" # 一改parser就出一堆bug了, 不加不行啊orz
     data = ["(+ 1 2)", ["+", "1", "2"], "_", "_"]
-    unittest(lambda:None, lambda _, y: interp.parser(y), data)
+    unittest(lambda: None, lambda _, y: interp.parser(y), data)
 
 def unittest(setup, fun, data):
     """UnitTest"""
@@ -106,16 +113,14 @@ def unittest(setup, fun, data):
         else:
             print(f"Test{int(i/2)} Failed, Expected '{data[i + 1]}' but got '{res}'")
 
+def starttest():
+    for i in range(0, len(test_list)):
+        print("=" * 16)
+        print(f"{test_list[i][0]}...")
+        test_list[i][1]()
+        print("=" * 16)
+
 
 if __name__ == '__main__':
-    print("=" * 16)
-    print("Type1:")
-    unittest1()
-    print("=" * 16)
-    print("Type2:")
-    unittest2()
-    print("=" * 16)
-    print("Parser:")
-    unittest_parser()
-    print("=" * 16)
+    starttest()
     
