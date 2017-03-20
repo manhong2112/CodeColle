@@ -1,54 +1,58 @@
 import interp
 import functools
 
-funcId = 0
 class Func():
     def __init__(self, args, body, scope):
         # (lambda (<args>) <body>)
         self.args_namelist = args
         self.args_len = len(args)
         self.body = body
-        global funcId
-        funcId += 1
-        self.closure = (funcId, scope)
+        self.closure = scope
         self.runtime = 0
 
-    def invoke(self, args, env, scope):
+    def __call__(self, args, env, scope):
         self.runtime += 1
         assert len(args) == self.args_len
+        exec_scope = ("fn" + str(self.runtime), self.closure)
         for i in range(0, self.args_len):
             env.set(
-                (self.runtime, self.closure), # scope
+                exec_scope, # scope
                 self.args_namelist[i], # var name
                 interp.interp0(args[i], env, scope)[0]) # value
-        return interp.interp0(self.body, env, (self.runtime, self.closure))
+        return interp.interp0(self.body, env, exec_scope)
+    
+    def __str__(self):
+        return "<type func>"
 
 class PreDefFunc(Func):
     def __init__(self, func, scope=None):
         self.func = func
-        global funcId
-        funcId += 1
-        self.closure = (funcId, scope)
+        self.closure = scope
         self.runtime = 0
 
-    def invoke(self, args, env, scope):
-
+    def __call__(self, args, env, scope):
         self.runtime += 1
-        return (self.func(args, env, (self.runtime, scope)), None)
+        exec_scope = ("fn" + str(self.runtime), scope)
+        return (self.func(args, env, exec_scope), None)
+    
+    def __str__(self):
+        return "<type builtin-func>"
 
 class Env():
     def __init__(self):
         self.env = dict()
+        init_env(self)
 
     def get(self, scope, name):
         while True:
             try:
+                # print(scope)
                 tmp = self.env[(name, scope)]
                 # print("get:", (name, scope))
                 return tmp
             except KeyError:
                 if scope is None:
-                    return None
+                    raise KeyError
                 else:
                     scope = scope[1]
 
@@ -56,24 +60,6 @@ class Env():
         # print("set:", (name, scope))
         assert (name, scope) not in self.env
         self.env[(name, scope)] = val
-
-def is_int(s):
-    try:
-        int(s)
-        return True
-    except ValueError:
-        return False
-    except TypeError:
-        return False
-
-def is_float(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
-    except TypeError:
-        return False
 
 def _add(args, env, scope):
     args[0] = interp.interp0(args[0], env, scope)[0]
@@ -97,8 +83,10 @@ def _mod(args, env, scope):
 
 def _do(args, env, scope):
     # (do ...)
+    # print("do:", scope)
     res = None
     for i in args:
+        # print(":", args)
         res = interp.interp0(i, env, scope)
     return res[0]
 
@@ -106,9 +94,9 @@ def _def(args, env, scope):
     # (def <name> <val>)
     # (def (<name> <args>) <body>) => (def <name> (lambda (<args>) <body>))
     if isinstance(args[0], list):
-        env.set(scope[1], args[0][0], _fn((args[0][1:], args[1]), env, scope[1]))
+        env.set(scope[1][1], args[0][0], _fn((args[0][1:], args[1]), env, scope[1][1]))
     else:
-        env.set(scope[1], str(args[0]), interp.interp0(args[1], env, scope[1])[0])
+        env.set(scope[1][1], str(args[0]), interp.interp0(args[1], env, scope[1][1])[0])
 
 def _fn(args, env, scope):
     # (fn (<fun args>) <fun body>)
@@ -137,7 +125,6 @@ def _let(args, env, scope):
             i[0], # var name
             interp.interp0(i[1], env, scope)[0]) # value
     return interp.interp0(args[1], env, scope)[0]
-
 
 def init_env(env):
     env.set(None, "do", PreDefFunc(_do))

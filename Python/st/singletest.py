@@ -3,14 +3,7 @@ import env
 import interp
 
 def unittest():
-    expr = "(do\
-                (def (F x)\
-                    (if (= x 0)\
-                   
-                        1\
-                        (* x (F (- x 1)))\
-                    ))\
-                (F 5))"
+    expr =  "x"
     print(interp.interp(interp.parser(expr)))
 
 if __name__ == '__main__':

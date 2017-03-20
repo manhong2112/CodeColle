@@ -37,8 +37,6 @@ def is_int(s):
         return True
     except ValueError:
         return False
-    except TypeError:
-        return False
 
 def is_float(s):
     try:
@@ -46,13 +44,21 @@ def is_float(s):
         return True
     except ValueError:
         return False
-    except TypeError:
-        return False
 
+def is_none(s):
+    return s is None
+
+
+scopeID = 0
 def interp0(expr, env, scope):
     if isinstance(expr, list):
         fun = interp0(expr[0], env, scope)[0]
-        return fun.invoke(expr[1:], env, scope)
+        global scopeID
+        scopeID += 1
+        # print((str(fun), scope))
+        return fun(expr[1:], env, (str(fun), scope))
+    elif is_none(expr):
+        return (None, None)
     elif is_int(expr):
         return (int(expr), None)
     elif is_float(expr):
@@ -61,6 +67,4 @@ def interp0(expr, env, scope):
         return (env.get(scope, expr), None)
 
 def interp(expr):
-    env0 = env.Env()
-    env.init_env(env0)
-    return interp0(expr, env0, None)[0]
+    return interp0(expr, env.Env(), None)[0]
