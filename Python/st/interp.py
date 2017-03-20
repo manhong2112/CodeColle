@@ -30,7 +30,7 @@ def parser(expr):
                 if buffer:
                     result.append(value_parser(buffer))
                 return result, index + 1
-            elif char == " ":
+            elif char == " " or char == "\n":
                 if buffer:
                     result.append(value_parser(buffer))
                     buffer = []
@@ -70,7 +70,7 @@ def interp0(expr, env, scope):
         global scopeID
         scopeID += 1
         # print((str(fun), scope))
-        return fun(expr[1:], env, (str(fun), scope))
+        return fun(expr[1:], env, (scopeID, (f"{fun}", scope)))
     elif is_none(expr):
         return (None, None)
     elif is_string(expr):

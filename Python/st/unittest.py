@@ -69,10 +69,11 @@ data = ["(print 1)", None,
 def unittest():
     """
     Simple Unit Test
-    Same Env
+    same env
     """
+    env0 = env.Env()
     for i in range(0, len(data), 2):
-        env0 = env.Env()
+        
         try:
             res = interp.interp0(interp.parser(data[i]), env0, None)[0]
         except Exception as e0:
