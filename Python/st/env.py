@@ -38,6 +38,9 @@ class PreDefFunc(Func):
     def __str__(self):
         return "<type builtin-func>"
 
+class String():
+    def __init__(self, val):
+        self.val = val
 class Env():
     def __init__(self):
         self.env = dict()
@@ -104,7 +107,13 @@ def _fn(args, env, scope):
 
 def _print(args, env, scope):
     # (print ...)
-    res = map(lambda y: str(interp.interp0(y, env, scope)[0]), args)
+    def _tostr(s):
+        v = interp.interp0(s, env, scope)[0]
+        if interp.is_string(s):
+            return v.val
+        else:
+            return str(v)
+    res = map(_tostr, args)
     print(" ".join(res))
 
 def _eq(args, env, scope):

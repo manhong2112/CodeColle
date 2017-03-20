@@ -4,6 +4,9 @@ import env
 import interp
 
 data = ["(print 1)", None,
+        "(print x)", KeyError,
+        "(print 'x')", None,
+        "(print \"x\")", None,
         "(do (+ 1 3) (+ 1 1))", 2,
         "(do (+ 1 2 3 4 5 6 7 8 9 10))", 55,
         "(+(+ 1                1)1)", 3,
@@ -61,7 +64,7 @@ data = ["(print 1)", None,
                 (gcd b (% a b))))\
             (gcd 4 8)\
         )", 4,
-        "(do _)", KeyError]
+        "_", KeyError]
 
 def unittest():
     """
