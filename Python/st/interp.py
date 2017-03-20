@@ -41,7 +41,10 @@ def parser(expr):
             else:
                 buffer.append(char)
             index += 1
-        return ''.join(buffer), index
+        if is_quote_by(buffer, '"') or is_quote_by(buffer, "'"):
+            return env.String(''.join(buffer[1:-1])), index
+        else:
+            return ''.join(buffer), index
     return _f(0)[0]
 
 def is_int(s):
