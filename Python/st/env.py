@@ -19,7 +19,7 @@ class Env():
                 tmp = self.env[(name, scope)]
                 # print("get:", (name, scope), "\n  ->", tmp)
                 return tmp
-            except KeyError as e:
+            except KeyError:
                 if scope is None:
                     raise KeyError()
                 else:
@@ -65,9 +65,9 @@ def _def(args, env, scope):
     # (def <name> <val>)
     # (def (<name> <args>) <body>) => (def <name> (lambda (<args>) <body>))
     if isinstance(args[0], list):
-        env.set(scope[1][1], args[0][0], _fn((args[0][1:], args[1]), env, scope[1][1]))
+        env.set(scope[1], args[0][0], _fn((args[0][1:], args[1]), env, scope[1]))
     else:
-        env.set(scope[1][1], str(args[0]), interp.interp0(args[1], env, scope[1][1])[0])
+        env.set(scope[1], str(args[0]), interp.interp0(args[1], env, scope[1])[0])
 
 def _fn(args, env, scope):
     # (fn (<fun args>) <fun body>)

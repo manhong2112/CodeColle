@@ -70,7 +70,7 @@ def interp0(expr, env, scope):
         global scopeID
         scopeID += 1
         # print((str(fun), scope))
-        return fun(expr[1:], env, (scopeID, (f"{fun}", scope)))
+        return fun(expr[1:], env, (scopeID, scope))
     elif is_none(expr):
         return (None, None)
     elif is_string(expr):
