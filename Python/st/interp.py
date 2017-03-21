@@ -44,6 +44,13 @@ def yet_another_parser(expr):
     last = [res]
     index = 0
     buffer = []
+    FLAG = 0
+    FLAG_DEFAULT = 0
+    FLAG_STRING = 1
+    FLAG_ESCAPING_STRING = 2
+    # 呃..應該差不多是這樣? 其實我在想會不會用到位運算....
+    ## 感覺好複雜..找天看看能不能想個辦法改改..
+    
     for char in expr:
         if char == "(" or char == "[":
             if buffer:
@@ -62,9 +69,32 @@ def yet_another_parser(expr):
             if buffer:
                 last[-1].append(value_parser(buffer))
                 buffer = []
+        elif char == "\"":
+            if FLAG == FLAG_DEFAULT:
+                FLAG = FLAG_STRING
+            elif FLAG == FLAG_STRING:
+                last[-1].append(env.String(''.join(buffer)))
+                buffer = []
+                FLAG = FLAG_DEFAULT
+            elif FLAG == FLAG_ESCAPING_STRING:
+                buffer += char
+                FLAG = FLAG_STRING
+            else:
+                print("WTF??")
+        elif char == "\\":
+            if FLAG == FLAG_DEFAULT:
+                raise SyntaxError
+            elif FLAG == FLAG_STRING:
+                FLAG == FLAG_ESCAPING_STRING
+            elif FLAG == FLAG_ESCAPING_STRING:
+                buffer += char
+            else:
+                print("WTF??")
         else:
             buffer += char
         index += 1
+    if FLAG != FLAG_DEFAULT:
+        raise SyntaxError
     if buffer:
         last[-1].append(value_parser(buffer))
         buffer = []
