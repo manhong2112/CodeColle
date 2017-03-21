@@ -1,5 +1,5 @@
 import interp
-import functools
+from functools import reduce
 import func
 
 class String():
@@ -34,23 +34,23 @@ class Env():
 
 def _add(args, env, scope):
     args[0] = interp.interp0(args[0], env, scope)[0]
-    return functools.reduce(lambda x, y: x + interp.interp0(y, env, scope)[0], args)
+    return reduce(lambda x, y: x + interp.interp0(y, env, scope)[0], args)
 
 def _sub(args, env, scope):
     args[0] = interp.interp0(args[0], env, scope)[0]
-    return functools.reduce(lambda x, y: x - interp.interp0(y, env, scope)[0], args)
+    return reduce(lambda x, y: x - interp.interp0(y, env, scope)[0], args)
 
 def _mul(args, env, scope):
     args[0] = interp.interp0(args[0], env, scope)[0]
-    return functools.reduce(lambda x, y: x * interp.interp0(y, env, scope)[0], args)
+    return reduce(lambda x, y: x * interp.interp0(y, env, scope)[0], args)
 
 def _div(args, env, scope):
     args[0] = interp.interp0(args[0], env, scope)[0]
-    return functools.reduce(lambda x, y: x / interp.interp0(y, env, scope)[0], args)
+    return reduce(lambda x, y: x / interp.interp0(y, env, scope)[0], args)
 
 def _mod(args, env, scope):
     args[0] = interp.interp0(args[0], env, scope)[0]
-    return functools.reduce(lambda x, y: x % interp.interp0(y, env, scope)[0], args)
+    return reduce(lambda x, y: x % interp.interp0(y, env, scope)[0], args)
 
 def _do(args, env, scope):
     # (do ...)

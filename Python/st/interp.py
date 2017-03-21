@@ -2,17 +2,16 @@
 參照某天跟冰封提起的方法嘗試實現的一個解釋器
 """
 import env
-import functools
 
+def value_parser(s):
+    if is_quote_by(s, '"') or is_quote_by(s, "'"):
+        return env.String(''.join(s[1:-1]))
+    else:
+        return ''.join(s)
 
 # parser str to list
 def parser(expr):
     length = len(expr)
-    def value_parser(s):
-        if is_quote_by(s, '"') or is_quote_by(s, "'"):
-            return env.String(''.join(s[1:-1]))
-        else:
-            return ''.join(s)
     def _f(index):
         result = []
         buffer = []
@@ -40,6 +39,37 @@ def parser(expr):
         return value_parser(buffer), index
     return _f(0)[0]
 
+def yet_another_parser(expr):
+    res = []
+    last = [res]
+    index = 0
+    buffer = []
+    for char in expr:
+        if char == "(" or char == "[":
+            if buffer:
+                last[-1].append(value_parser(buffer))
+                buffer = []
+            new = []
+            last[-1].append(new)
+            last.append(new)
+        elif char == ")" or char == "]":
+            if buffer:
+                last.pop().append(value_parser(buffer))
+                buffer = []
+            else:
+                last.pop()
+        elif char == " ":
+            if buffer:
+                last[-1].append(value_parser(buffer))
+                buffer = []
+        else:
+            buffer += char
+        index += 1
+    if buffer:
+        last[-1].append(value_parser(buffer))
+        buffer = []
+    return res[0]
+
 def is_int(s):
     try:
         int(s)
@@ -61,7 +91,7 @@ def is_string(s):
     return isinstance(s, env.String)
 
 def is_quote_by(s, q):
-    return s[0] == s[-1] == q
+    return  q == s[0] == s[-1]
 
 scopeID = 0
 def interp0(expr, env, scope):
