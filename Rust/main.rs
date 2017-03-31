@@ -21,6 +21,7 @@ struct EachRecord {
     draw: Vec<Loc>,
     lose: Vec<Loc>
 }
+
 fn main() {
     let mut table : LinkedList<Step> = LinkedList::new();
     let mut record : [EachRecord; 19683];
