@@ -13,7 +13,7 @@ int main(void) {
 ll fastPwr(int a, int k) {
   ll ans = 1;
   while (k) {
-    if (k % 2 == 1) {
+    if (k & 0b1 == 0b1) {
       ans = ans * a;
     }
     a *= a;
