@@ -12,7 +12,7 @@ api_key = "8e9fc618fbd41e28"
 
 
 def get_json(url):
-    return json.loads(urllib.urlopen(url).read().decode("unicode-escape").replace('\r\n', ''))
+    return json.loads(urllib.urlopen(url).read().decode("unicode-escape").replace('\r\n', ''), strict=False)
 
 
 def printf(str, *val):
