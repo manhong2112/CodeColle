@@ -13,6 +13,9 @@ LIVE_STATUS = {
     "LIVE": 2
 }
 
+
+
+
 class Live():
     def __init__(self, live_id):
         self.ROOM_URL = live_id
@@ -25,25 +28,28 @@ class Live():
         self.GETINFO_URL = f"{GETINFO_API}?roomid={self.ROOM_ID}"
         self.PLAYURL_URL = f"{PLAYURL_API}?cid={self.ROOM_ID}&quality=4"
 
-        tmp = get_json(self.GETINFO_URL)
-        self.NICK_NAME = tmp["data"]["ANCHOR_NICK_NAME"]
+        self.raw = get_json(self.GETINFO_URL)
+        self.NICK_NAME = self.raw["data"]["ANCHOR_NICK_NAME"]
 
     def get_live_status(self):
-        tmp = get_json(self.GETINFO_URL)
-        tmp = tmp["data"]["LIVE_STATUS"]
+        self.raw = get_json(self.GETINFO_URL)
+        tmp = self.raw["data"]["LIVE_STATUS"]
         return LIVE_STATUS[tmp], tmp
 
     def get_url(self):
-        tmp = get_html(self.PLAYURL_URL)
-        tmp = str(BeautifulSoup(tmp, "html.parser").findAll("durl")[0])
+        self.raw = get_html(self.PLAYURL_URL)
+        tmp = str(BeautifulSoup(self.raw, "html.parser").findAll("durl")[0])
         return re.findall(r"\[CDATA\[(.*)\]\]", tmp)
 
     def get_name(self):
         return self.NICK_NAME
 
     def get_title(self):
-        tmp = get_json(self.GETINFO_URL)
-        return tmp["data"]["ROOMTITLE"]
+        self.raw = get_json(self.GETINFO_URL)
+        return self.raw["data"]["ROOMTITLE"]
+    
+    def get_recently_rawdata(self):
+        return self.raw
 
 def get_html(url):
     return request.urlopen(url).read().decode("utf-8")
