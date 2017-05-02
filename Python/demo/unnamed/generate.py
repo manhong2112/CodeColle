@@ -13,20 +13,3 @@ def newEquip(seed):
 def newMob(seed):
     pass
 
-
-class Mob():
-    def __init__(self, name, attribute):
-        self.name = name
-        self.attribute = attribute
-
-class Equip():
-    def __init__(self, name, attribute, skill):
-        self.name = name
-        self.attribute = attribute
-
-class Item():
-    def __init__(self, name, attribute, skill):
-        self.name = name
-        self.attribute = attribute
-
-class Attribute(dict): pass
