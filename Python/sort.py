@@ -7,7 +7,6 @@ def printf(string, *obj):
 
 
 def bubble_sort(arr):
-    arr = arr[:]
     for i in range(len(arr) - 1, 0, -1):
         for j in range(i):
             if arr[j] > arr[j + 1]:
@@ -23,6 +22,39 @@ def quick_sort(arr):
     for i in arr[1:]:
         (b if i < a else c).append(i)
     return quick_sort(b) + [a] + quick_sort(c)
+
+def middle(a, b, c):
+    return min(max(a, b), c)
+
+def quick_sort_v2(arr):
+    # [1 ,2 , 3]
+    length = len(arr)
+    if length <= 1:
+        return arr
+    elif length < 16:
+        return select_sort(arr)
+    else:
+        # [1,2,3,4,5,6,7,8]
+        k = length//2
+        pivot1 = middle(arr[k//3+1], arr[k*2//3+1], arr[k])
+        pivot2 = middle(arr[k+1], arr[k+k*2//3+1], arr[-1])
+        chunk1 = []
+        chunk2 = []
+        chunk3 = []
+        chunk4 = []
+        chunk5 = []
+        for i in arr:
+            if i < pivot1:
+                chunk1.append(i)
+            elif i == pivot1:
+                chunk2.append(i)
+            elif i > pivot2:
+                chunk5.append(i)
+            elif i == pivot2:
+                chunk4.append(i)
+            else:
+                chunk3.append(i)
+        return quick_sort_v2(chunk1) + chunk2 + quick_sort_v2(chunk3) + chunk4 + quick_sort_v2(chunk5)
 
 def swap(arr, x, y):
     arr[x], arr[y] = arr[y], arr[x]
@@ -74,7 +106,6 @@ def merge_sort(arr):
                 result.append(arr2[j])
                 j += 1
         return result
-
     length = len(arr)
     if length <= 1:
         return arr
@@ -84,10 +115,11 @@ def merge_sort(arr):
 
 
 def select_sort(arr):
-    for i in range(len(arr)):
-        for j in range(i, len(arr)):
-            if arr[j] < arr[i]:
-                arr[i], arr[j] = arr[j], arr[i]
+    for i in range(1, len(arr)):
+        j = i
+        while j > 0 and arr[j-1] > arr[j]:
+            swap(arr, j, j-1)
+            j -= 1
     return arr
 
 
