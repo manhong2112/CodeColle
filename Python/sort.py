@@ -122,6 +122,17 @@ def select_sort(arr):
             j -= 1
     return arr
 
+def bit_quick_sort(arr, n=32):
+    if not arr or n <= 0:
+        return arr
+    bit0 = []
+    bit1 = []
+    for i in arr:
+        if i & (1 << n):
+            bit1.append(i)
+        else:
+            bit0.append(i)
+    return bit_quick_sort(bit0, n-1) + bit_quick_sort(bit1, n-1)
 
 def time(fun, *arr):
     s = timeit.default_timer()
