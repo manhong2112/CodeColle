@@ -33,7 +33,7 @@ def download(dao, *url):
                         {"id": "live",
                          "method": "aria2.addUri",
                          "jsonrpc": "2.0",
-                         "params": [[url[2]], {"out": f"{dao.NICK_NAME}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"}]}), "utf-8"))
+                         "params": [url, {"out": f"{dao.NICK_NAME}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"}]}), "utf-8"))
 
 def argsProcess(LIVE_DAO, ARGS):
     if "push" in ARGS:
