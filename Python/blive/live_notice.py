@@ -33,7 +33,8 @@ def download(dao, *url):
                         {"id": "live",
                          "method": "aria2.addUri",
                          "jsonrpc": "2.0",
-                         "params": [url, {"out": f"{dao.NICK_NAME}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"}]}), "utf-8"))
+                         "params": [url, {"out": f"{dao.NICK_NAME}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"}, 0]
+                         }), "utf-8"))
 
 def argsProcess(LIVE_DAO, ARGS):
     if "push" in ARGS:
@@ -45,6 +46,7 @@ def argsProcess(LIVE_DAO, ARGS):
     if "download" in ARGS:
         log(f'正在下載...')
         try:
+            time.sleep(2)
             download(LIVE_DAO, *LIVE_DAO.get_url())
         except Exception as e:
             log(f'下載失敗...', err=True)
@@ -79,7 +81,7 @@ def main(LIVE_ID, **ARGS):
                 try:
                     if LIVE_DAO.get_live_status()[0] == live.LIVE_STATUS["PREPARING"]:
                         break
-                    time.sleep(2)
+                    time.sleep(1)
                 except Exception as e:
                     time.sleep(5)
             log(f"{NAME}直播結束...")
