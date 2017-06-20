@@ -1,4 +1,5 @@
 @echo off
+D:
 cd D:\manhong\WorkSpace\Code
 git add .
 git commit -m "Script commit at %DATE:~0,10% %TIME:~0,8% UTC+8"

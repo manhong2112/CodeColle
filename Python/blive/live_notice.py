@@ -46,7 +46,7 @@ def argsProcess(LIVE_DAO, ARGS):
     if "download" in ARGS:
         log(f'正在下載...')
         try:
-            time.sleep(2)
+            time.sleep(5)
             download(LIVE_DAO, *LIVE_DAO.get_url())
         except Exception as e:
             log(f'下載失敗...', err=True)
@@ -71,9 +71,9 @@ def main(LIVE_ID, **ARGS):
                 try:
                     if LIVE_DAO.get_live_status()[0] == live.LIVE_STATUS["LIVE"]:
                         break
-                    time.sleep(2)
-                except Exception as e:
                     time.sleep(5)
+                except Exception as e:
+                    time.sleep(10)
             log(f'{NAME}直播中...')
             argsProcess(LIVE_DAO, ARGS)
             log(f"正在監聽{NAME}結束直播...")
@@ -81,9 +81,9 @@ def main(LIVE_ID, **ARGS):
                 try:
                     if LIVE_DAO.get_live_status()[0] == live.LIVE_STATUS["PREPARING"]:
                         break
-                    time.sleep(1)
-                except Exception as e:
                     time.sleep(5)
+                except Exception as e:
+                    time.sleep(10)
             log(f"{NAME}直播結束...")
         except Exception as e:
             log("未知錯誤, 重啟中...", err=True)
