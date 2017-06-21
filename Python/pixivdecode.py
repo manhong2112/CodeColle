@@ -22,6 +22,7 @@ def argsParse(args):
 def getImg(date, pid, page, ext):
     url = "https://i.pximg.net/img-original/img/{}/{}_p{}.{}"\
         .format(date, pid, page, ext)
+    print(f"GET: {url}")
     req = request.Request(url, headers={'referer': url})
     return request.urlopen(req).read()
 
@@ -30,7 +31,7 @@ def parse(pid):
     host = "http://www.pixiv.net"
     img_page = host + "/member_illust.php?mode=medium&illust_id=" + pid
     res = GET(img_page).read().decode("utf-8")
-    m = re.sub(r'(?s).*(?:class="img-container"><a.*?><img src="(.*?)"|class="sensored"><img src="(.*?)").*', r'\1', res)
+    m = re.sub(r'.*(?:class="img-container"><a.*?><img src="(.*?)"|class="sensored"><img src="(.*?)").*', r'\1', res)
     return re.sub(r"(?s).*/img/(.*)/" + pid + ".*", r'\1', m)
 
 
@@ -42,7 +43,8 @@ def main(pid):
         try:
             yield getImg(date, pid, page, ext)
             page += 1
-        except HTTPError:
+        except HTTPError as e:
+            print(e)
             if ext == "jpg":
                 break
             else:
@@ -59,8 +61,8 @@ else:
 for pid in args["pid"].split(" "):
     page = 0
     for p in main(pid):
-        dist = f"{dist + '/' if dist else ''}{pid}_p{page}.png"
-        with open(dist, 'wb') as f:
+        _dist = f"{dist + '/' if dist else ''}{pid}_p{page}.png"
+        with open(_dist, 'wb') as f:
             f.write(p)
-            print(f"saved to {dist}")
+            print(f"saved to {_dist}")
         page += 1
