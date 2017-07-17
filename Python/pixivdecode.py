@@ -19,29 +19,46 @@ def argsParse(args):
 
 
 
-def getImg(date, pid, page, ext):
-    url = "https://i.pximg.net/img-original/img/{}/{}_p{}.{}"\
-        .format(date, pid, page, ext)
+def getImg(url):
     print(f"GET: {url}")
     req = request.Request(url, headers={'referer': url})
     return request.urlopen(req).read()
 
+def getImgUrl(date, pid, page, ext):
+    url = "https://i.pximg.net/img-original/img/{}/{}_p{}.{}"\
+        .format(date, pid, page, ext)
+    return url
 
 def parse(pid):
     host = "http://www.pixiv.net"
-    img_page = host + "/member_illust.php?mode=medium&illust_id=" + pid
-    res = GET(img_page).read().decode("utf-8")
-    m = re.sub(r'.*(?:class="img-container"><a.*?><img src="(.*?)"|class="sensored"><img src="(.*?)").*', r'\1', res)
+    page = host + "/member_illust.php?mode=medium&illust_id=" + pid
+    res = GET(page).read().decode("utf-8")
+    date = parseDate(pid, res)
+    title = parseTitle(res)
+    tag = parseTag(res)
+    author = parseAuthor(res)
+    ret = {"pid": pid, "author": author, "title": title, "tag": tag, "date": date}
+    return ret
+
+def parseTag(page):
+    return re.findall(r'<meta name="keywords" content="(.*?)">', page)[0]
+
+def parseTitle(page):
+    return re.findall(r'userdata"><h1 class="title">(.*)</h1>', page)[0]
+
+def parseAuthor(page):
+    return re.findall(r'<a href="member.php.*>(.*?)</a></h2>', page)[0]
+
+def parseDate(pid, page):
+    m = re.sub(r'.*(?:class="img-container"><a.*?><img src="(.*?)"|class="sensored"><img src="(.*?)").*', r'\1', page)
     return re.sub(r"(?s).*/img/(.*)/" + pid + ".*", r'\1', m)
 
-
-def main(pid):
-    date = parse(pid)
+def _main(info):
     ext = "png"
     page = 0
     while True:
         try:
-            yield getImg(date, pid, page, ext)
+            yield getImg(getImgUrl(info["date"], pid, page, ext))
             page += 1
         except HTTPError as e:
             print(e)
@@ -60,7 +77,10 @@ else:
     dist = None
 for pid in args["pid"].split(" "):
     page = 0
-    for p in main(pid):
+    info = parse(pid)
+    with open(f"{dist + '/' if dist else ''}/info.txt" , 'a+', encoding="utf-8") as f:
+        f.write(repr(info) + "\n")
+    for p in _main(info):
         _dist = f"{dist + '/' if dist else ''}{pid}_p{page}.png"
         with open(_dist, 'wb') as f:
             f.write(p)
