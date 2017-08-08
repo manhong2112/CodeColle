@@ -1,102 +1,10 @@
 <body>
 </body>
 <style>
-   body {
-      overflow: hidden;
-   }
-   @keyframes pX {
-      0% {
-         left: -50px;
-      }
-      100% {
-         left: 100%;
-      }
-   }
-
-   @keyframes pY {
-      0% {
-         top: -50px;
-      }
-      100% {
-         top: 100%;
-      }
-   }
-
-   @keyframes r {
-      0% {
-         transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-      }
-      100% {
-         transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);
-      }
-   }
+  body {
+    padding: 0;
+    margin: 0;
+  }
 </style>
 <script src="util.js"></script>
 <script src="sakura.js"></script>
-<script>
-   "use strict"
-   var drawAnimation = (list, fps) => {
-      // init
-      list.forEach((obj, _index, _arr) => {
-         obj.c.style.position = "absolute"
-         let scalePosX = window.innerWidth / fps
-         let scalePosY = window.innerHeight / fps
-         let scaleRotate = 360 / fps
-         obj.c.style.opacity = `${obj.size / 120}`
-         // obj.c.style.filter = `blur(${obj.size / 80}px)`
-         obj.c.style.animation =
-            `\
-          pX ${scalePosX / obj.vx}s infinite linear, \
-          pY ${scalePosX / obj.vy}s infinite linear, \
-          r ${scaleRotate / Math.abs(obj.rotatev)}s infinite linear ${obj.rotatev > 0 ? "" : "backwards"}`
-         document.body.appendChild(obj.c)
-
-      })
-   }
-
-   var main = () => {
-      var sakuraList = window.sakuraList = initArray(300, (_index) => {
-         let o = {
-            size: randint(10, 80),
-            vx: rand(0.1, 1),
-            vy: rand(0.2, 2),
-            rotatev: (Boolean(randint(0, 1)) ? -1 : +1) * rand(0.1, 0.5),
-         }
-         o.c = getSakura(o.size)
-         o.move = () => {
-            o.x += o.vx
-            o.y += o.vy
-            if (o.x > window.innerWidth) {
-               o.x = -50
-            }
-            if (o.y > window.innerHeight) {
-               o.y = -50
-            }
-         }
-         o.rotate = () => {
-            o.rotatex += o.rotatevx
-            o.rotatey += o.rotatevy
-            o.rotatez += o.rotatevz
-            if (o.rotatex > 360) {
-               o.rotatex -= 360
-            } else if (o.rotatex < 0) {
-               o.rotatex += 360
-            }
-            if (o.rotatey > 360) {
-               o.rotatey -= 360
-            } else if (o.rotatey < 0) {
-               o.rotatey += 360
-            }
-            if (o.rotatez > 360) {
-               o.rotatez -= 360
-            } else if (o.rotatez < 0) {
-               o.rotatez += 360
-            }
-         }
-         return o
-      })
-      drawAnimation(sakuraList, 80)
-   }
-   main()
-   // document.body.appendChild(getSakura(500))
-</script>
