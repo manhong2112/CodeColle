@@ -1,4 +1,3 @@
-"use strict"
 var initArray = (size, func) => {
    let arr = new Array(size);
    for (let x = 0; x < size; x++) {

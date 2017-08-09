@@ -1,4 +1,3 @@
-"use strict"
 // k / (150 * size)
 var createElement = (tag, prop, style) => {
    let ele = document.createElement(tag)
