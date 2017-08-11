@@ -46,7 +46,7 @@ def argsProcess(LIVE_DAO, ARGS):
     if "download" in ARGS:
         log(f'正在下載...')
         try:
-            time.sleep(5)
+            time.sleep(10)
             download(LIVE_DAO, *LIVE_DAO.get_url())
         except Exception as e:
             log(f'下載失敗...', err=True)
