@@ -61,9 +61,10 @@ class Reply(object):
         res = [get_json(url.format(self.aid, 1))]
         reply = {}
         
-        upper_subreply_data = json2subReplyData(res[0]["data"]["upper"]["top"]["replies"])
-        upper_reply_data = json2ReplyData(res[0]["data"]["upper"]["top"], upper_subreply_data)
-        reply[upper_reply_data.floor] = upper_reply_data
+        if res[0]["data"]["upper"]["top"]:
+            upper_subreply_data = json2subReplyData(res[0]["data"]["upper"]["top"]["replies"])
+            upper_reply_data = json2ReplyData(res[0]["data"]["upper"]["top"], upper_subreply_data)
+            reply[upper_reply_data.floor] = upper_reply_data
 
         reply_count = self.last_reply_count = res[0]["data"]["page"]["count"]
         self.last_reply_acount = res[0]["data"]["page"]["acount"]
@@ -83,7 +84,7 @@ class Reply(object):
         res = get_json(url.format(self.aid, pn))
         reply = {}
         for each_reply in res["data"]["replies"]:
-            subreply_data = json2ReplyData(each_reply["replies"])
+            subreply_data = json2subReplyData(each_reply["replies"])
             reply_data = json2ReplyData(each_reply, subreply_data)
             reply[reply_data.floor] = reply_data
         return reply
