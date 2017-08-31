@@ -58,36 +58,6 @@ var createSakura = () => {
       rotatev: (Boolean(randint(0, 1)) ? -1 : +1) * rand(0.1, 0.5),
    }
    o.c = drawSakura(o.size)
-   o.move = () => {
-      o.x += o.vx
-      o.y += o.vy
-      if (o.x > window.innerWidth) {
-         o.x = -50
-      }
-      if (o.y > window.innerHeight) {
-         o.y = -50
-      }
-   }
-   o.rotate = () => {
-      o.rotatex += o.rotatevx
-      o.rotatey += o.rotatevy
-      o.rotatez += o.rotatevz
-      if (o.rotatex > 360) {
-         o.rotatex -= 360
-      } else if (o.rotatex < 0) {
-         o.rotatex += 360
-      }
-      if (o.rotatey > 360) {
-         o.rotatey -= 360
-      } else if (o.rotatey < 0) {
-         o.rotatey += 360
-      }
-      if (o.rotatez > 360) {
-         o.rotatez -= 360
-      } else if (o.rotatez < 0) {
-         o.rotatez += 360
-      }
-   }
    return o
 }
 
