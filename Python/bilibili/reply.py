@@ -117,3 +117,7 @@ def main(aid, pb):
             open(f"reply.{count}", "w", encoding="utf-8").write(s)
             count += 1
         last_reply_count = l
+
+if __name__ == "__main__":
+    import sys
+    main(int(sys.argv[1]), None)

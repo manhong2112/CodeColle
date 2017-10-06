@@ -68,11 +68,11 @@ def main(memberid, pb):
             while k == last_count:
                 time.sleep(5)
                 k = get_submit_count(memberid)
-            push_notication(pb, "Notice", f"{NAME}投/刪稿了...({last_count} -> {k})")
+            pb and push_notication(pb, "Notice", f"{NAME}投/刪稿了...({last_count} -> {k})")
             # START 評論監聽
-            # if k > last_count:
-                # import reply
-                # reply.main(get_last_submit(memberid), pb)
+            if k > last_count:
+                import reply
+                reply.main(get_last_submit(memberid), pb)
             # END 評論監聽
             last_count = k
             log(f"{NAME}投/刪稿了...({last_count} -> {k})")
@@ -81,5 +81,5 @@ def main(memberid, pb):
             pass
 
 if __name__ == "__main__":
-    mid = 0
-    main(mid, PushBullet(""))
+    mid = int(sys.argv[1])
+    main(mid, None)
