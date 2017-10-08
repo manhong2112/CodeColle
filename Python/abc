@@ -1,0 +1,14 @@
+class CacheFunc(object):
+  def __init__(self, f):
+      self.cache = {}
+      
+_cache = {}
+def cacheFunc(f):
+  _cache[f.__name__] = {}
+  def _f(*args):
+    if args in _cache[f.__name__]:
+      return _cache[f.__name__][args]
+    else:
+      _cache[f.__name__][args] = f(*args)
+      return _f(*args)
+  return _f
