@@ -5,25 +5,25 @@ import re
 from bs4 import BeautifulSoup
 
 LIVE_HOST = "http://live.bilibili.com"
+APT_HOST = "https://api.live.bilibili.com"
 PLAYURL_API = f"{LIVE_HOST}/api/playurl"
 GETINFO_API = f"{LIVE_HOST}/live/getInfo"
+ROOMINIT_API = f"{APT_HOST}/room/v1/Room/room_init"
 LIVE_STATUS = {
     "PREPARING": 0,
     "ROUND": 1,
     "LIVE": 2
 }
 
-
-
+def get_roomid(shortid):
+    url = f"{ROOMINIT_API}?id={shortid}"
+    data = get_json(url)
+    return data["data"]["room_id"]
 
 class Live():
     def __init__(self, live_id):
-        self.ROOM_URL = live_id
-        tmp = get_html(f"{LIVE_HOST}/{live_id}")
-        tmp = str(BeautifulSoup(tmp, "html.parser").findAll("script")[2])
-        tmp = re.search(r"var ROOMID = (\d+)", tmp)
-
-        self.ROOM_ID = tmp.group(1)
+        self.LIVE_ID = live_id
+        self.ROOM_ID = get_roomid(self.LIVE_ID)
 
         self.GETINFO_URL = f"{GETINFO_API}?roomid={self.ROOM_ID}"
         self.PLAYURL_URL = f"{PLAYURL_API}?cid={self.ROOM_ID}&quality=4"
@@ -59,9 +59,6 @@ def get_json(url):
 
 def get_url(live_id):
     return Live(live_id).get_url()
-
-def get_roomid(live_id):
-    return Live(live_id).ROOM_ID
 
 def get_live_status(live_id):
     return Live(live_id).get_live_status()
