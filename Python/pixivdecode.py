@@ -17,8 +17,6 @@ def argsParse(args):
             res[i[0]] = i[1]
     return res
 
-
-
 def getImg(url):
     print(f"GET: {url}")
     req = request.Request(url, headers={'referer': url})
