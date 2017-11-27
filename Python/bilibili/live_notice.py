@@ -21,7 +21,7 @@ def log(msg, err=None):
 def push_notication(PB, LIVE_DAO):
     for i in PB.getDevices():
         if i["pushable"]:
-            PB.pushLink(i["iden"], f'{LIVE_DAO.NICK_NAME}直播中...', f'{live.LIVE_HOST}/{LIVE_DAO.ROOM_URL}')
+            PB.pushLink(i["iden"], f'{LIVE_DAO.get_name()}直播中...', f'{live.LIVE_HOST}/{LIVE_DAO.ROOM_URL}')
             PB.pushNote(i["iden"], 'Link:', "\n".join(LIVE_DAO.get_url()))
 
 ARIA2_RPC = "http://localhost:6800/jsonrpc"
@@ -33,7 +33,7 @@ def download(dao, *url):
                         {"id": "live",
                          "method": "aria2.addUri",
                          "jsonrpc": "2.0",
-                         "params": [url, {"out": f"{dao.NICK_NAME}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"}, 0]
+                         "params": [url, {"out": f"{dao.get_name()}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"}, 0]
                          }), "utf-8"))
 
 def argsProcess(LIVE_DAO, ARGS):
@@ -69,7 +69,7 @@ def main(LIVE_ID, **ARGS):
             log(f"正在監聽{NAME}直播...")
             while True:
                 try:
-                    if LIVE_DAO.get_live_status()[0] == live.LIVE_STATUS["LIVE"]:
+                    if LIVE_DAO.get_live_status() == live.LIVE_STATUS["LIVE"]:
                         break
                     time.sleep(2)
                 except Exception as e:
@@ -79,7 +79,7 @@ def main(LIVE_ID, **ARGS):
             log(f"正在監聽{NAME}結束直播...")
             while True:
                 try:
-                    if LIVE_DAO.get_live_status()[0] == live.LIVE_STATUS["PREPARING"]:
+                    if LIVE_DAO.get_live_status() == live.LIVE_STATUS["PREPARING"]:
                         break
                     time.sleep(5)
                 except Exception as e:

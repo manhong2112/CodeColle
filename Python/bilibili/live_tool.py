@@ -6,15 +6,15 @@ import re
 from bs4 import BeautifulSoup
 
 LIVE_HOST = "http://live.bilibili.com"
-API_HOST = "https://api.live.bilibili.com"
+API_HOST = "http://api.live.bilibili.com"
 USERINFO_API = "http://space.bilibili.com/ajax/member/GetInfo"
 PLAYURL_API = f"{LIVE_HOST}/api/playurl"
 GETINFO_API = f"{API_HOST}/room/v1/Room/get_info"
 ROOMINIT_API = f"{API_HOST}/room/v1/Room/room_init"
 LIVE_STATUS = {
     "PREPARING": 0,
-    "ROUND": 1,
-    "LIVE": 2
+    "LIVE": 1,
+    "ROUND": 2
 }
 
 def get_roomid(shortid):
@@ -41,12 +41,11 @@ class Live():
 
     def get_live_status(self):
         self.raw = get_roominfo(self.ROOM_ID)
-        tmp = self.raw["data"]["live_status"]
-        return LIVE_STATUS[tmp], tmp
+        return self.raw["data"]["live_status"]
 
     def get_url(self):
-        self.PLAYURL_URL = f"{PLAYURL_API}?cid={self.ROOM_ID}&quality=4"
-        raw = get_html(self.PLAYURL_URL)
+        PLAYURL_URL = f"{PLAYURL_API}?cid={self.ROOM_ID}&quality=4"
+        self.raw = get_html(PLAYURL_URL)
         tmp = str(BeautifulSoup(self.raw, "html.parser").findAll("durl")[0])
         return re.findall(r"\[CDATA\[(.*)\]\]", tmp)
 
