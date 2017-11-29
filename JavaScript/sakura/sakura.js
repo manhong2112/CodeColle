@@ -83,8 +83,8 @@ var drawAnimation = (list, speed) => {
 var sakura_main = (num, speed) => {
    addStyle("@keyframes pX {0% {left: -100px;} 100% {left: 100%;}}")
    addStyle("@keyframes pY {0% {top: -100px;} 100% {top: 100%;}}")
-   addStyle("@keyframes r {0% {rotateX(0deg) rotateY(0deg) rotateZ(0deg);} \
-                         100% {rotateX(360deg) rotateY(360deg) rotateZ(360deg);}}")
+   addStyle("@keyframes r {0% {transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);}\
+                           100% {transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg);}}")
    var sakuraList = window.sakuraList = initArray(num || 300, createSakura)
    drawAnimation(sakuraList, speed || 60)
 }
