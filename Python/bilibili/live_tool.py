@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 LIVE_HOST = "http://live.bilibili.com"
 API_HOST = "http://api.live.bilibili.com"
 USERINFO_API = "http://space.bilibili.com/ajax/member/GetInfo"
-PLAYURL_API = f"{LIVE_HOST}/api/playurl"
+PLAYURL_API = f"{API_HOST}/api/playurl"
 GETINFO_API = f"{API_HOST}/room/v1/Room/get_info"
 ROOMINIT_API = f"{API_HOST}/room/v1/Room/room_init"
 LIVE_STATUS = {
@@ -39,22 +39,22 @@ class Live():
         self.raw = get_roominfo(self.ROOM_ID)
         self.userinfo = get_userinfo(self.raw["data"]["uid"])
 
+        self.PLAYURL_URL = f"{PLAYURL_API}?cid={self.ROOM_ID}&quality=4&otype=json&platform=web"
+
     def get_live_status(self):
         self.raw = get_roominfo(self.ROOM_ID)
         return self.raw["data"]["live_status"]
 
     def get_url(self):
-        PLAYURL_URL = f"{PLAYURL_API}?cid={self.ROOM_ID}&quality=4"
-        self.raw = get_html(PLAYURL_URL)
-        tmp = str(BeautifulSoup(self.raw, "html.parser").findAll("durl")[0])
-        return re.findall(r"\[CDATA\[(.*)\]\]", tmp)
+        tmp = get_json(self.PLAYURL_URL)
+        return [i["url"] for i in tmp["durl"]]
 
     def get_name(self):
         return self.userinfo["data"]["name"]
 
     def get_title(self):
-        self.raw = get_json(self.GETINFO_URL)
-        return self.raw["data"]["ROOMTITLE"]
+        self.raw = self.raw = get_roominfo(self.ROOM_ID)
+        return self.raw["data"]["title"]
 
     def get_recently_rawdata(self):
         return self.raw
