@@ -7,15 +7,26 @@ GET = lambda url: request.urlopen(url)
 # http://www.pixiv.net/img-original/img/<time>/<pid>_p<page>.png
 
 def argsParse(args):
-    # xxx=yyy | xxx
+    # xxx=yyy | xxx[=true]
     res = {}
     for i in args:
         i = i.split("=", 1)
         if len(i) == 1:
             res[i[0]] = True
         else:
-            res[i[0]] = i[1]
+            res[i[0]] = argsParse0(i[1])
     return res
+
+def argsParse0(args):
+    table = {
+        "true": True,
+        "false": False,
+    }
+    a = args.lower()
+    if a in table:
+        return table[a]
+    else:
+        return args
 
 def getImg(url):
     print(f"GET: {url}")
@@ -56,7 +67,7 @@ def _main(info):
     page = 0
     while True:
         try:
-            yield getImg(getImgUrl(info["date"], pid, page, ext))
+            yield getImg(getImgUrl(info["date"], pid, page, ext)), ext
             page += 1
         except HTTPError as e:
             print(e)
@@ -69,17 +80,19 @@ def _main(info):
 # py xxx dist=123 "pid=123456 123456"
 args = argsParse(sys.argv)
 assert "pid" in args
+
 if "dist" in args:
     dist = args["dist"]
 else:
     dist = None
+
 for pid in args["pid"].split(" "):
     page = 0
     info = parse(pid)
     with open(f"{dist + '/' if dist else ''}/info.txt" , 'a+', encoding="utf-8") as f:
         f.write(repr(info) + "\n")
-    for p in _main(info):
-        _dist = f"{dist + '/' if dist else ''}{pid}_p{page}.png"
+    for p, ext in _main(info):
+        _dist = f"{dist + '/' if dist else ''}{pid}_p{page}.{ext}"
         with open(_dist, 'wb') as f:
             f.write(p)
             print(f"saved to {_dist}")
