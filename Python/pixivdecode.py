@@ -135,7 +135,7 @@ def args_illust_id(args):
         info = download_illust_id(illust_id)
         pics = info.pics
         with open(f"{dist}/info.txt" , 'a+', encoding="utf-8") as f:
-            f.write(repr((illustInfo.pid, illustInfo.author, illustInfo.title, illustInfo.tag, illustInfo.date)) + "\n")
+            f.write(repr((info.pid, info.author, info.title, info.tag, info.date)) + "\n")
 
         for page, eachPicture in enumerate(pics, 0):
             img = eachPicture.img
@@ -176,6 +176,9 @@ def args_member_id(args):
 # python xxx [dist=123] ["illust_id=123 123"] ["member_id=123 123"] ["account=acc" "password=pw"]
 if __name__ == "__main__":
     args = argsParse(sys.argv)
+    if "help" in args and args["help"]:
+        print("python xxx [dist=<path>] [illust_id=<illust_id>]")
+        print("python xxx [dist=<path>] [member_id=<member_id> account=<acc> password=<pw>]")
     if "illust_id" in args:
         args_illust_id(args)
     if "member_id" in args:
