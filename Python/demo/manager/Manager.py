@@ -7,6 +7,7 @@ import pathlib
 import time
 import json
 
+from utils import delete_folder
 # File :: (String, String, String, Set<Tag>)
 class File(namedtuple("File", ["name", "path", "hash", "tags"])):
    def __init__(self, *args, **vargs):
@@ -16,7 +17,7 @@ class File(namedtuple("File", ["name", "path", "hash", "tags"])):
       return self.__hashcode
    
    def __eq__(self, obj):
-      return type(obj) is File and self.hash == obj.hash and self.name == obj.name and self.path == obj.name
+      return type(obj) is File and self.hash == obj.hash and self.name == obj.name and self.path == obj.path
    
    def __repr__(self):
       tags = ", ".join(tag.name for tag in sorted(self.tags))
@@ -56,11 +57,6 @@ def createFileObj(path):
       return File(name, path, sha.hexdigest(), set())
    pass
 
-class Lock():
-   def __init__(self):
-      pass
-
-
 class DB(metaclass=Singleton):
    def __init__(self, path="./managerdb"):
       self.path = path
@@ -87,7 +83,7 @@ class DB(metaclass=Singleton):
          elif op == "removeTag":
             tm.removeTag(name=args[0], db=False)
          elif op == "addFile":
-            tm.addFile(tm.getTag(args[0]), createFileObj("/".join(args[1])), db=False)
+            tm.addFile(tm.createTag(args[0]), createFileObj("/".join(args[1])), db=False)
          elif op == "removeFile":
             tm.removeFile(path="/".join(args[1]), db=False)
 
@@ -99,11 +95,10 @@ class Manager(metaclass=Singleton):
       self.filemap = dict()
       # self.tagmap :: Dict<Path : String, File>
 
-   def getTag(self, name):
-      return self.tagmap[name]
-   
    def createTag(self, name, db=True):
       assert type(name) is str
+      if name in self.tagmap:
+         return self.tagmap[name]
       if db: self.db.save("createTag", [name])
       t = Tag(name, set())
       self.tagmap[name] = t
@@ -131,12 +126,12 @@ class Manager(metaclass=Singleton):
    def removeFile(self, file=None, path=None, db=True):
       assert file is not None or path is not None
       if file:
-         path = tag.path
+         path = file.path
       if db: self.db.save("removeFile", path)
-      tag = self.tagmap.pop(name, None)
-      for file in tag.files:
-         file.tags.remove(tag)
-      tag.files.clear
+      file = self.filemap.pop(path, None)
+      for tag in file.tags:
+         tag.files.remove(file)
+      tag.files.clear()
    
 
 def listAll(tm):
@@ -152,12 +147,10 @@ def listAll(tm):
 def test1():
    f = createFileObj("65746707_p0.jpg")
    tm: Manager = Manager()
-   tag = tm.createTag("Picture")
-   tag2 = tm.createTag("Anime")
-   tm.addFile(tag, f)
-   tm.addFile(tag2, f)
+   tm.addFile(tm.createTag("Picture"), f)
+   tm.addFile(tm.createTag("Anime"), f)
    listAll(tm)
-   tm.removeTag("Anime")
+   tm.removeTag(name="Anime")
    listAll(tm)
 
 def test2():
@@ -168,3 +161,4 @@ def test2():
 if __name__ == "__main__":
    test1()
    test2()
+   delete_folder("managerdb")
