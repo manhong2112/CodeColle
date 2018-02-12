@@ -6,7 +6,7 @@ import time
 import utils
 import fileaccessor
 
-import json
+import yajl as json
 
 # File :: (String, String, String, Dict<TagName: String, Tag>)
 class File(namedtuple("File", ["name", "path", "tags", "dao"])):
@@ -45,40 +45,56 @@ def createFileObj(dao, path):
    return File(path[-1], path, dict(), dao)
 
 class DB():
-   def __init__(self, dao, path):
+   def __init__(self, dao, path, localdb=""):
       self.dao: fileaccessor.FileAccessor = dao
       self.path = path
-      self.last = 0
+      self.localDao = fileaccessor.Local(localdb)
+      self.localPath = ".tagdb"
+      self.last = '0'
       self.dao.mkdir(path)
 
    def save(self, op, args):
       opts = self.last = str(int(time.time()*1000))
       path = os.path.join(self.path, opts)
-      print(path)
-      print(self.dao.isfile(path))
       if self.dao.isfile(path):
          return self.save(op, args)
       with self.dao.open(path, "w+") as f:
          f.write(json.dumps({"op": op, "args": args}))
 
-   def load(self, tm, start=None):
-      start = start if start is not None else self.last
+   def loadLocal(self, tm):
+      if not self.localDao.isfile(self.localPath):
+         return
+      t = utils.readJson(self.localDao, self.localPath)
+      int(t["ts"]) # to ensure it is number
+      self.last = t["ts"]
+      for obj in t["opList"]:
+         self.execute(tm, obj["op"], obj["args"])
+   
+   def execute(self, tm, op, args):
+      print(op + ": " + repr(args))
+      if op == "createTag":
+         tm.createTag(args[0], db=False)
+      elif op == "removeTag":
+         tm.removeTag(name=args[0], db=False)
+      elif op == "addFile":
+         p = "/".join(args[1])
+         tm.addFile(tm.createTag(args[0]), createFileObj(tm.dao, p), db=False)
+      elif op == "removeFile":
+         tm.removeFile(path="/".join(args[1]), db=False)
+
+   def load(self, tm):
+      self.loadLocal(tm)
+      tsList = self.dao.listdir(self.path)
       fileList = [os.path.join(self.path, str(i)) \
-                    for i in sorted(int(x) for x in self.dao.listdir(self.path))\
-                    if i >= start]
-      for obj in utils.readAllJson(self.dao, fileList):
-         op, args = obj["op"], obj["args"]
-         print(op + ": " + repr(args))
-         if op == "createTag":
-            tm.createTag(args[0], db=False)
-         elif op == "removeTag":
-            tm.removeTag(name=args[0], db=False)
-         elif op == "addFile":
-            p = "/".join(args[1])
-            tm.addFile(tm.createTag(args[0]), createFileObj(tm.dao, p), db=False)
-         elif op == "removeFile":
-            tm.removeFile(path="/".join(args[1]), db=False)
-      if fileList: self.last = fileList[-1]
+                    for i in sorted(int(x) for x in tsList)\
+                    if i > int(self.last)]
+      if not fileList: return
+      objs = utils.readAllJson(self.dao, fileList)
+      int(tsList[-1])
+      utils.writeJson(self.localDao, self.localPath, {"ts": tsList[-1], "opList": objs})
+      self.last = tsList[-1]
+      for obj in objs:
+         self.execute(tm, obj["op"], obj["args"])
 
 class TagManager(metaclass=Singleton):
    def __init__(self, dao, dbpath=".tagdb"):
@@ -89,8 +105,8 @@ class TagManager(metaclass=Singleton):
       self.filemap = dict()
       # self.tagmap :: Dict<Path : String, File>
 
-   def load(self, start=0):
-      self.db.load(self, start)
+   def load(self):
+      self.db.load(self)
 
    def createTag(self, name, db=True):
       assert type(name) is str

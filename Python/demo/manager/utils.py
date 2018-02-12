@@ -61,6 +61,11 @@ def readJson(dao, path):
       # print(path)
       return json.loads(f.read())
 
+def writeJson(dao, path, obj):
+   with dao.open(path, mode="w+") as f:
+      # print(path)
+      return f.write(json.dumps(obj))
+
 def readAllFile(dao, pathList):
    import multiprocessing
    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
@@ -70,4 +75,3 @@ def readAllJson(dao, pathList):
    import multiprocessing
    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
    return pool.starmap(readJson, [(dao, i) for i in pathList])
-
