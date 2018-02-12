@@ -8,6 +8,7 @@ def main():
    func = {
       "tag": tag,
       "listtag": listtag,
+      "listdir": listdir,
       "filter": filter,
    }
    dao = fileaccessor.WebDav("http://127.0.0.1", "/nextcloud/remote.php/dav/files/manhong2112/manhong", "manhong2112", "f60af455")
@@ -50,14 +51,22 @@ def filter(tm: manager.TagManager, args):
       for file in tm.filemap.values():
          if file.name == arg:
             result.add(file)
-
    for filterType, tagname in utils.chunks(args[3:], 2):
       if filterType == "tag":
          for file in (f for f in result if tagname not in file.tags):
             result.remove(file)
 
    for file in result:
-      print(file)
+      print(repr(file))
+
+def listdir(tm: manager.TagManager, args):
+   # listdir <path>
+   if len(args) == 1:
+      args.append("/")
+   print("     Path: " + args[1])
+   print("===========" + "=" * len(args[1]))
+   for i in tm.dao.listdir(args[1]):
+      print(i)
 
 if __name__ == "__main__":
    main()

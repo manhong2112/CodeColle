@@ -68,13 +68,14 @@ class DB():
                     if i >= start]
       for obj in utils.readAllJson(self.dao, fileList):
          op, args = obj["op"], obj["args"]
-         # print(op + ": " + repr(args))
+         print(op + ": " + repr(args))
          if op == "createTag":
             tm.createTag(args[0], db=False)
          elif op == "removeTag":
             tm.removeTag(name=args[0], db=False)
          elif op == "addFile":
-            tm.addFile(tm.createTag(args[0]), createFileObj(tm.dao, "/".join(args[1])), db=False)
+            p = "/".join(args[1])
+            tm.addFile(tm.createTag(args[0]), createFileObj(tm.dao, p), db=False)
          elif op == "removeFile":
             tm.removeFile(path="/".join(args[1]), db=False)
       if fileList: self.last = fileList[-1]
@@ -118,8 +119,8 @@ class TagManager(metaclass=Singleton):
       if db: self.db.save("addFile", [tag.name, file.path])
       if file.path not in self.filemap:
          self.filemap[file.path] = file
-      file.tags[tag.name] = tag
-      tag.files.add(file)
+      self.filemap[file.path].tags[tag.name] = tag
+      tag.files.add(self.filemap[file.path])
 
    def removeFile(self, file=None, path=None, db=True):
       assert file is not None or path is not None
