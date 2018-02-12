@@ -3,6 +3,7 @@ import utils
 import traceback
 import sys
 import fileaccessor
+
 def main():
    func = {
       "tag": tag,
@@ -57,5 +58,6 @@ def filter(tm: manager.TagManager, args):
 
    for file in result:
       print(file)
+
 if __name__ == "__main__":
    main()

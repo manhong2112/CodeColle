@@ -6,10 +6,7 @@ import time
 import utils
 import fileaccessor
 
-try:
-   import ujson as json
-except ImportError:
-   import json
+import json
 
 # File :: (String, String, String, Dict<TagName: String, Tag>)
 class File(namedtuple("File", ["name", "path", "tags", "dao"])):
@@ -54,21 +51,22 @@ class DB():
       self.last = 0
       self.dao.mkdir(path)
 
-
    def save(self, op, args):
       opts = self.last = str(int(time.time()*1000))
       path = os.path.join(self.path, opts)
+      print(path)
+      print(self.dao.isfile(path))
       if self.dao.isfile(path):
          return self.save(op, args)
       with self.dao.open(path, "w+") as f:
-         json.dump({"op": op, "args": args}, f)
+         f.write(json.dumps({"op": op, "args": args}))
 
    def load(self, tm, start=None):
       start = start if start is not None else self.last
       fileList = [os.path.join(self.path, str(i)) \
                     for i in sorted(int(x) for x in self.dao.listdir(self.path))\
                     if i >= start]
-      for obj in utils.readAllJson(fileList):
+      for obj in utils.readAllJson(self.dao, fileList):
          op, args = obj["op"], obj["args"]
          # print(op + ": " + repr(args))
          if op == "createTag":

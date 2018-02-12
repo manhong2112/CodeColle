@@ -51,22 +51,23 @@ def path2tuple(path):
    import os.path
    return tuple(os.path.normpath(path).split(os.sep))
 
-def readFile(path):
-   with open(path) as f:
+def readFile(dao, path):
+   with dao.open(path) as f:
       return f.read()
 
-import ujson as json
-def readJson(path):
-   with open(path) as f:
+import yajl as json
+def readJson(dao, path):
+   with dao.open(path) as f:
       # print(path)
       return json.loads(f.read())
 
-def readAllFile(pathList):
+def readAllFile(dao, pathList):
    import multiprocessing
    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
-   return pool.map(readFile, pathList)
+   return pool.starmap(readFile, [(dao, i) for i in pathList])
 
-def readAllJson(pathList):
+def readAllJson(dao, pathList):
    import multiprocessing
    pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
-   return map(readJson, pathList)
+   return pool.starmap(readJson, [(dao, i) for i in pathList])
+

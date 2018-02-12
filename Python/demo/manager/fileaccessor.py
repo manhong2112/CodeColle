@@ -37,17 +37,18 @@ import webdav.client as wc
 class WebDavFileObject():
    def __init__(self, client, path, mode="r", encoding="utf8"):
       self.client = client
-      self.path = path
+      self.path = path.replace('\\', "/")
       self.buffer = Buffer()
 
    def read(self):
+      self.buffer.clean()
       self.client.download_to(self.buffer, self.path)
       return self.buffer.read()
 
    def write(self, content):
-      print(self.path)
-      self.buffer.write(content)
-      self.client.upload_from(self.buffer, "test")
+      self.buffer.clean()
+      self.buffer.write(content.encode())
+      self.client.upload_from(self.buffer, self.path)
 
    def __enter__(self):
       return self
@@ -91,18 +92,31 @@ class WebDav(FileAccessor):
 class Buffer():
    def __init__(self, init=None):
       self.buff = init or b''
+      self.offset = 0
 
-   def read(self, *args, **vargs):
-      return self.buff
-
+   def read(self, size=None):
+      b = b''
+      if size is None and len(self.buff) > self.offset:
+         b = self.buff[self.offset:]
+         self.offset = len(self.buff)
+      elif len(self.buff) > self.offset:
+         b = self.buff[self.offset:self.offset + size]
+         self.offset += size
+      return b
+   
    def write(self, content, *args, **vargs):
-      self.buff += content.encode()
+      self.buff += content
 
    def clean(self):
       self.buff = b''
+      self.offset = 0
+   
+   def seek(self, offset):
+      self.offset = offset
 
 if __name__ == "__main__":
    dao = WebDav("http://127.0.0.1", "/nextcloud/remote.php/dav/files/manhong2112/manhong", "manhong2112", "f60af455")
    client = dao.client
    f = WebDavFileObject(client, "abc")
    f.write("hello world")
+   print(f.read())
