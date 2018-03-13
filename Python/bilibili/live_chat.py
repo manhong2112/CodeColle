@@ -1,6 +1,7 @@
 import base64
 import random
 import time
+from threading import Thread
 
 
 class Int16(object):
@@ -102,6 +103,16 @@ def arrayPadTo(length, arr):
    return ([0] * (length - len(arr))) + arr
 
 
+def keepSocketLife(socket):
+   lastsend = int(time.time())
+   while True:
+      if int(time.time()) > lastsend + 30:
+         lastsend = int(time.time())
+         socket.send(chatEncode(
+             2,
+             b'[object Object]'))  # ??? i don't know why, maybe it just a bug?
+
+
 def main():
    import websocket
    conn = websocket.create_connection(
@@ -111,14 +122,12 @@ def main():
        b'{"uid":0,"roomid":49728,"protover":1,"platform":"web","clientver":"1.2.8"}'
    )
    conn.send(data)
-   lastsend = int(time.time())
-   print(chatDecode(conn.recv_frame().data))
+   thread = Thread(target=keepSocketLife, args=(conn,))
+   thread.start()
    while True:
-      print(chatDecode(conn.recv_frame().data))
-      if int(time.time()) > lastsend + 30:
-         lastsend = int(time.time())
-         conn.send(chatEncode(
-             2, b'[object Object]'))  # ??? i don't know why, maybe just a bug?
+      data = chatDecode(conn.recv_frame().data)
+      print(data)
+      print(data["content"].decode("unicode-escape"))
 
 
 if __name__ == "__main__":
