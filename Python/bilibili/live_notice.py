@@ -38,15 +38,15 @@ def download(dao, *url):
        bytes(
            json.dumps({
                "id":
-                   "live",
+               "live",
                "method":
-                   "aria2.addUri",
+               "aria2.addUri",
                "jsonrpc":
-                   "2.0",
+               "2.0",
                "params": [
                    url, {
                        "out":
-                           f"{dao.get_name()}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"
+                       f"{dao.get_name()}-{t.tm_year}-{t.tm_mon:02d}-{t.tm_mday:02d}.{ts}.flv"
                    }, 0
                ]
            }), "utf-8"))

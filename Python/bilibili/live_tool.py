@@ -7,6 +7,10 @@ from urllib.parse import urlencode
 import websocket
 from bs4 import BeautifulSoup
 import queue
+import time
+
+import live_chat as lchat
+
 LIVE_HOST = "http://live.bilibili.com"
 API_HOST = "http://api.live.bilibili.com"
 USERINFO_API = "http://space.bilibili.com/ajax/member/GetInfo"
@@ -33,10 +37,11 @@ def get_roominfo(roomid):
 def post(url, data={}, headers={}):
    return request.urlopen(\
             request.Request(url, urlencode(data).encode(), headers=headers)\
-          ).read().decode() # yapf: disable
+          ).read().decode()
 
 
 class Live():
+
    def __init__(self, live_id):
       self.LIVE_ID = live_id
       self.ROOM_ID = get_roomid(self.LIVE_ID)
@@ -65,25 +70,51 @@ class Live():
       return self.raw
 
    class ChatRoom(object):
+
+      @staticmethod
+      def __connect(roomid):
+         conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
+         data = lchat.chatEncode(
+             7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}'
+                ).encode())
+         conn.send(data)
+         return conn
+
       def __init__(self, roomid):
-         import live_chat as lchat
          self.roomid = roomid
          self.danmakuList = []
          self.newDanmakuQueue = queue.Queue()
-         self.conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
-         data = lchat.chatEncode(7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode())
-         self.conn.send(data)
+         self.conn = self.__connect(roomid)
 
-         def func():
+         def send(data):
+            # with auto reconnect
+            try:
+               self.conn.send(data)
+            except websocket._exceptions.WebSocketConnectionClosedException:
+               self.conn = self.__connect(roomid)
+               self.conn.send(data)
+
+         def recv_frame():
+            try:
+               return self.conn.recv_frame()
+            except websocket._exceptions.WebSocketConnectionClosedException:
+               self.conn = self.__connect(roomid)
+               return self.conn.recv_frame()
+
+         def recvDanmaku():
             while True:
-               data = lchat.chatDecode(self.conn.recv_frame().data)
-               self.newDanmakuQueue.put(data)
+               data = lchat.chatDecode(recv_frame().data)
+               for i in data:
+                  self.newDanmakuQueue.put(i)
 
          def keepSocketLife():
-            self.conn.send(lchat.chatEncode(2, b'[object Object]'))
+            while True:
+               send(lchat.chatEncode(2, b'[object Object]'))
+               time.sleep(30)
 
-         self.danmakuThread = Thread(target=func)
-         self.keepSocketLifeThread = Timer(30, keepSocketLife)
+         self.danmakuThread = Thread(target=recvDanmaku)
+         self.keepSocketLifeThread = Thread(target=keepSocketLife)
+
          self.danmakuThread.start()
          self.keepSocketLifeThread.start()
 
@@ -102,6 +133,9 @@ class Live():
 
       def __get__(self, index):
          return self.danmakuList[index]
+
+      def __exit__(self):
+         self.conn.close()
 
    def get_chat_room(self):
       return Live.ChatRoom(self.ROOM_ID)
