@@ -21,8 +21,7 @@ class Int16(object):
 
    @staticmethod
    def fromUInt8arr(arr):
-      return Int16.fromUint16(
-          sum(v << (8 * (1 - i)) for i, v in enumerate(arr[:Int16.SIZE], 0)))
+      return Int16.fromUint16(sum(v << (8 * (1 - i)) for i, v in enumerate(arr[:Int16.SIZE], 0)))
 
    @staticmethod
    def toUInt16(num):
@@ -53,8 +52,7 @@ class Int32(object):
    @staticmethod
    def fromUInt8arr(arr):
       s = Int32.SIZE
-      return Int32.fromUint32(
-          sum(v << (s * (3 - i)) for i, v in enumerate(arr[:s], 0)))
+      return Int32.fromUint32(sum(v << (s * (3 - i)) for i, v in enumerate(arr[:s], 0)))
 
    @staticmethod
    def toUInt32(num):
@@ -106,15 +104,15 @@ def arrayPadTo(length, arr):
 def keepSocketLife(socket):
    while True:
       time.sleep(30)
-      socket.send(chatEncode(2, b'[object Object]')) # ??? i don't know why, maybe it just a bug? # yapf: disable
+      socket.send(chatEncode(2, b'[object Object]'))  # ??? i don't know why, maybe it just a bug?
 
 
 def main(roomid):
    import websocket
-   conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub") # yapf: disable
-   data = chatEncode(7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode()) # yapf: disable
+   conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
+   data = chatEncode(7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode())  # yapf: disable
    conn.send(data)
-   thread = Thread(target=keepSocketLife, args=(conn,))
+   thread = Thread(target=keepSocketLife, args=(conn, ))
    thread.start()
    while True:
       data = chatDecode(conn.recv_frame().data)

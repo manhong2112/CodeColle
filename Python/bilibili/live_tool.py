@@ -1,10 +1,12 @@
-import urllib.request as request
-from urllib.parse import urlencode
 import json
 import re
+import urllib.request as request
+from threading import Thread, Timer
+from urllib.parse import urlencode
 
+import websocket
 from bs4 import BeautifulSoup
-
+import queue
 LIVE_HOST = "http://live.bilibili.com"
 API_HOST = "http://api.live.bilibili.com"
 USERINFO_API = "http://space.bilibili.com/ajax/member/GetInfo"
@@ -21,8 +23,7 @@ def get_roomid(shortid):
 
 
 def get_userinfo(uid):
-   return json.loads(
-       post(USERINFO_API, {"mid": uid}, {"referer": USERINFO_API}))
+   return json.loads(post(USERINFO_API, {"mid": uid}, {"referer": USERINFO_API}))
 
 
 def get_roominfo(roomid):
@@ -36,7 +37,6 @@ def post(url, data={}, headers={}):
 
 
 class Live():
-
    def __init__(self, live_id):
       self.LIVE_ID = live_id
       self.ROOM_ID = get_roomid(self.LIVE_ID)
@@ -63,6 +63,48 @@ class Live():
 
    def get_recently_rawdata(self):
       return self.raw
+
+   class ChatRoom(object):
+      def __init__(self, roomid):
+         import live_chat as lchat
+         self.roomid = roomid
+         self.danmakuList = []
+         self.newDanmakuQueue = queue.Queue()
+         self.conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
+         data = lchat.chatEncode(7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode())
+         self.conn.send(data)
+
+         def func():
+            while True:
+               data = lchat.chatDecode(self.conn.recv_frame().data)
+               self.newDanmakuQueue.put(data)
+
+         def keepSocketLife():
+            self.conn.send(lchat.chatEncode(2, b'[object Object]'))
+
+         self.danmakuThread = Thread(target=func)
+         self.keepSocketLifeThread = Timer(30, keepSocketLife)
+         self.danmakuThread.start()
+         self.keepSocketLifeThread.start()
+
+      def hasNext(self):
+         return not self.newDanmakuQueue.empty()
+
+      def next(self, block=True):
+         danmaku = self.newDanmakuQueue.get(block)
+         self.danmakuList.append(danmaku)
+         return danmaku
+
+      def cleanQueue(self):
+         while not self.newDanmakuQueue.empty():
+            self.danmakuList.append(self.newDanmakuQueue.get())
+         return self.danmakuList
+
+      def __get__(self, index):
+         return self.danmakuList[index]
+
+   def get_chat_room(self):
+      return Live.ChatRoom(self.ROOM_ID)
 
 
 def get_html(url):
