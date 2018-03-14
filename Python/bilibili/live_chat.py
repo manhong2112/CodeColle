@@ -112,7 +112,7 @@ def keepSocketLife(socket):
 def main(roomid):
    import websocket
    conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub") # yapf: disable
-   data = chatEncode(7, b'{"uid":0,"roomid":' + roomid + ',"protover":1,"platform":"web","clientver":"1.2.8"}') # yapf: disable
+   data = chatEncode(7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode()) # yapf: disable
    conn.send(data)
    thread = Thread(target=keepSocketLife, args=(conn,))
    thread.start()
