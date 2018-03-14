@@ -104,23 +104,15 @@ def arrayPadTo(length, arr):
 
 
 def keepSocketLife(socket):
-   lastsend = int(time.time())
    while True:
-      if int(time.time()) > lastsend + 30:
-         lastsend = int(time.time())
-         socket.send(chatEncode(
-             2,
-             b'[object Object]'))  # ??? i don't know why, maybe it just a bug?
+      time.sleep(30)
+      socket.send(chatEncode(2, b'[object Object]')) # ??? i don't know why, maybe it just a bug? # yapf: disable
 
 
-def main():
+def main(roomid):
    import websocket
-   conn = websocket.create_connection(
-       "ws://broadcastlv.chat.bilibili.com:2244/sub")
-   data = chatEncode(
-       7,
-       b'{"uid":0,"roomid":49728,"protover":1,"platform":"web","clientver":"1.2.8"}'
-   )
+   conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub") # yapf: disable
+   data = chatEncode(7, b'{"uid":0,"roomid":' + roomid + ',"protover":1,"platform":"web","clientver":"1.2.8"}') # yapf: disable
    conn.send(data)
    thread = Thread(target=keepSocketLife, args=(conn,))
    thread.start()
@@ -131,4 +123,4 @@ def main():
 
 
 if __name__ == "__main__":
-   main()
+   main(49728)
