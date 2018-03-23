@@ -9,7 +9,7 @@ HeaderLen = 16
 
 
 def chatEncode(op, content, ver=1, seq=1):
-   # Assure content is bytearray or list
+   # Assume content is bytearray or list
    # [0, 0, 0, 0] + [0, 0]    + [0, 0] + [0, 0, 0, 0] + [0, 0, 0, 0]
    # contentLen   + headerLen + ver    + op           + seq
    headerLen = 16
