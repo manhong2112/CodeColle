@@ -74,10 +74,8 @@ class Live():
       @staticmethod
       def __connect(roomid):
          conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
-         data = lchat.chatEncode(
-             7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}'
-                ).encode())
-         conn.send(data)
+         data =(f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode()
+         conn.send(lchat.chatEncode(7, data))
          return conn
 
       def __init__(self, roomid):

@@ -12,10 +12,9 @@ def chatEncode(op, content, ver=1, seq=1):
    # Assume content is bytearray or list
    # [0, 0, 0, 0] + [0, 0]    + [0, 0] + [0, 0, 0, 0] + [0, 0, 0, 0]
    # contentLen   + headerLen + ver    + op           + seq
-   headerLen = 16
    ver = 1
    seq = 1
-   return arrayPadTo(4, Int32.toUInt8arr(len(content) + headerLen)) + \
+   return arrayPadTo(4, Int32.toUInt8arr(len(content) + HeaderLen)) + \
           arrayPadTo(2, Int16.toUInt8arr(HeaderLen)) + \
           arrayPadTo(2, Int16.toUInt8arr(ver)) + \
           arrayPadTo(4, Int32.toUInt8arr(op)) + \
@@ -54,14 +53,16 @@ def keepSocketLife(socket):
 def main(roomid):
    import websocket
    conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
-   data = chatEncode(7, (f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode())  # yapf: disable
+   data = chatEncode(7, (
+       f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode())
    conn.send(data)
    thread = Thread(target=keepSocketLife, args=(conn,))
    thread.start()
    while True:
       data = chatDecode(conn.recv_frame().data)
-      print(data)
-      print(data["content"].decode("unicode-escape"))
+      for i in data:
+         print(i)
+         print(decodeUnicodeEscape(i["content"].decode("utf-8", errors="ignore")))
 
 
 def decodeUnicodeEscape(string):
@@ -90,4 +91,4 @@ def decodeUnicodeEscape(string):
 
 
 if __name__ == "__main__":
-   main(49728)
+   main(184298)

@@ -10,14 +10,15 @@ import live_tool as live
 from pushbullet import PushBullet
 
 
-def log(msg, err=None):
+def log(msg, prefix="", err=None, end="\n"):
    t = time.localtime()
    tm = f"[{t.tm_year}/{t.tm_mon:02d}/{t.tm_mday:02d} {t.tm_hour:02d}:{t.tm_min:02d}:{t.tm_sec:02d}]"
    if err and "log" in ARGS:
       logging.exception(f"{tm} {msg}")
    elif err:
       traceback.print_exception(*sys.exc_info())
-   print(f"{tm} {msg}")
+   print(f"{prefix}{tm} {msg}", end=end)
+   sys.stdout.flush()
 
 
 def push_notication(PB, LIVE_DAO):
@@ -82,22 +83,26 @@ def main(LIVE_ID, **ARGS):
       try:
          log(f"正在監聽{NAME}直播...")
          while True:
+            log("heartbeat", prefix="\b" * 100, end="")
             try:
                if LIVE_DAO.get_live_status() == live.LIVE_STATUS["LIVE"]:
                   break
                time.sleep(2)
             except Exception as e:
                time.sleep(5)
+         print()
          log(f'{NAME}直播中...')
          argsProcess(LIVE_DAO, ARGS)
          log(f"正在監聽{NAME}結束直播...")
          while True:
+            log("heartbeat", prefix="\b" * 100, end="")
             try:
                if LIVE_DAO.get_live_status() == live.LIVE_STATUS["PREPARING"]:
                   break
                time.sleep(2)
             except Exception as e:
                time.sleep(5)
+         print()
          log(f"{NAME}直播結束...")
       except Exception as e:
          log("未知錯誤, 重啟中...", err=True)

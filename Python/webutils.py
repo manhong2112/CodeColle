@@ -15,7 +15,6 @@ def GET(url, headers=dict()):
         request.add_header(k, headers[k])
     return urlopen(request)
 
-# http://www.pixiv.net/img-original/img/<time>/<pid>_p<page>.png
 def GET_json(url, headers=dict()):
     return json.loads(GET(url, headers).read().decode("unicode-escape").replace('\r\n', ''), strict=False)
 
