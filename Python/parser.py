@@ -1,15 +1,15 @@
-def f(string, fmt):
+def tokenize(string, token):
     res = []
     buffer = ""
     for i in string:
         buffer += i
-        if buffer in fmt:
+        if buffer in token:
             res.append(buffer)
             buffer = ""
         else:
             for j in range(len(buffer)):
                 k = buffer[-j:]
-                if k in fmt:
+                if k in token:
                     res.append(buffer[:len(buffer)-j])
                     res.append(k)
                     buffer = ""
@@ -18,4 +18,4 @@ def f(string, fmt):
     res.append(-1)
     return res
 
-f("var x := 1\n////var y := x", ["var", ":=", " ", "\n", "//"])
+tokenize("var x := 1\n////var y := x", ["var", ":=", " ", "\n", "//"])

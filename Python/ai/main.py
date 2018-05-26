@@ -1,48 +1,37 @@
-from sklearn import svm
-from sklearn import linear_model as lmdl
-from sklearn import neural_network as nn
-from sklearn import datasets
-from sklearn import tree
-from sklearn import neighbors
-from sklearn import ensemble
+import numpy as np
 
-mdls = [
-   ("KNeighborsClassifier", neighbors.KNeighborsClassifier()),
-   ("SVC", svm.SVC()),
-   ("Linear SVC", svm.SVC(kernel='linear')),
-   ("MLPClassifier", nn.MLPClassifier()),
-   ("DecisionTreeClassifier", tree.DecisionTreeClassifier()),
-   ("RandomForestClassifier", ensemble.RandomForestClassifier()), 
-   ("AdaBoostClassifier", ensemble.AdaBoostClassifier()),
-]
+def ReLU(x):
+   return np.vectorize(lambda a: max(0, a))(x)
 
-digits = datasets.load_digits()
-data = digits.data[:1000]
-target = digits.target[:1000]
-predict = digits.data[1000:]
-pTarget = digits.target[1000:]
+def ReLU_D(x):
+   return np.vectorize(lambda a: 0 if a < 0 else 1)(x)
 
-# for i in range(1000):
-#    data.append([i])
-#    target.append(1 if i & 1 == 1 else 0)
+def sigmoid(x):
+   return 1 / (1 + np.exp(-x))
 
-for name, mdl in mdls:
-   mdl.fit(data, target)
+def sigmoid_D(x):
+   return x * (1 - x)
 
-for name, mdl in mdls:
-   total = len(pTarget)
-   passed = 0
-   for res, target in zip(mdl.predict(predict),  pTarget):
-      if res == target:
-         passed += 1
-   print(f"{name} Passed: {passed} in {total}")
+def clippedReLU(x, clipped=1):
+   return np.vectorize(lambda a: min(1, max(0, a)))(x)
 
-"""
-KNeighborsClassifier Passed: 763 in 797
-SVC Passed: 256 in 797
-Linear SVC Passed: 751 in 797
-MLPClassifier Passed: 732 in 797
-DecisionTreeClassifier Passed: 610 in 797
-RandomForestClassifier Passed: 709 in 797
-AdaBoostClassifier Passed: 211 in 797
-"""
+input_data = np.array([
+   [1, 0, 1, 0, 1],
+   [1, 1, 0, 0, 1],
+   [0, 0, 1, 0, 1],
+   [1, 1, 1, 1, 1],
+   [0, 0, 0, 0, 1],
+   [1, 0, 0, 0, 1],
+   [0, 1, 0, 0, 1],
+   [0, 0, 1, 0, 1],
+   ])
+output_data = np.array([[0, 1, 0, 1, 0, 0, 1, 0]]).T
+
+weight = 2 * np.random.random((5, 1)) - 1
+
+for i in range(100000):
+   output = ReLU(np.dot(input_data, weight))
+   loss = output_data - output
+   weight += np.dot(input_data.T, loss * ReLU_D(output))
+
+clippedReLU(np.dot(np.array([1, 0, 1, 0, 1]), weight))

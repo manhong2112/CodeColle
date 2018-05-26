@@ -25,24 +25,35 @@ def join(msg, cookie):
        })
 
 
-def main():
-   cookie = ""
+def main(args):
    room = live_tool.Live(184298).get_chat_room()
    while True:
       msg = room.next()["content"]
       try:
          msg = json.loads(msg)
-         if msg["cmd"] == "SYS_MSG" and msg["rep"] == 1 and msg["styleType"] == 2 and (
-             np.random.rand(1)[0] > 0.2):
+         if msg["cmd"] == "SYS_MSG" and msg["rep"] == 1 and msg["styleType"] == 2:
             print("small tv?")
             print(msg)
-            t = np.random.rand() * 5 + abs(np.random.normal(loc=20, scale=5))
-            print(f"sleep for {t}")
-            time.sleep(t)
-            print(join(msg, cookie).read())
+            if np.random.rand(1)[0] > 0.1:
+               t = np.random.rand() * 5 + abs(np.random.normal(loc=20, scale=5))
+               print(f"sleep for {t}")
+               time.sleep(t)
+               print(join(msg, args["cookie"]).read())
       except Exception as e:
          print(e)
 
+def argsParse(argv, defValue=None)
+   args = defValue
+   if not args:
+      args = {}
+   for i in argv:
+      x = i.split("=", 1)
+      if len(x) == 1:
+         args[x[0]] = True
+      else:
+         args[x[0]] = x[1]
+   return args
 
 if __name__ == "__main__":
-   main()
+   import sys
+   main(argsParse(sys.argv[1:]))
