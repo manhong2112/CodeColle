@@ -5,27 +5,39 @@ import json
 import numpy as np
 import time
 
+def get_small_tv_list(roomid):
+   url = f"https://api.live.bilibili.com/gift/v3/smalltv/check?roomid={roomid}"
+   return ut.GET_json(url)["data"]["list"]
 
-def join(msg, cookie):
-   shortid = msg["roomid"]
-   roomid = msg["real_roomid"]
-   tv_id = msg["tv_id"]
-   url = f"https://api.live.bilibili.com/gift/v2/smalltv/join?roomid={roomid}&raffleId={tv_id}"
-   return ut.GET(
-       url,
+def join(roomid, tv_id, cookie):
+   return ut.POST(
+       "https://api.live.bilibili.com/gift/v3/smalltv/join",
+       data={
+          "roomid": roomid,
+          "raffleId": tv_id,
+          "type": "Gift",
+          "csrf_token": "e85b0f4d99828f1498d5d03a379582af",
+          "visit_id": ""
+       },
        headers={
            "Cookie":
            cookie,
            "Origin":
            "https://live.bilibili.com",
            "Referer":
-           f"https://live.bilibili.com/{shortid}",
+           f"https://live.bilibili.com/{roomid}",
            "User-Agent":
            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.183 Safari/537.36 Vivaldi/1.96.1147.36",
        })
 
+def process(msg, cookie):
+   roomid = msg["real_roomid"]
+   tv_list = get_small_tv_list(roomid)
+   return [join(roomid, i["raffleId"], cookie).read().decode() for i in tv_list]
+
 
 def main(args):
+   print(args["cookie"])
    room = live_tool.Live(184298).get_chat_room()
    while True:
       msg = room.next()["content"]
@@ -35,14 +47,14 @@ def main(args):
             print("small tv?")
             print(msg)
             if np.random.rand(1)[0] > 0.1:
-               t = np.random.rand() * 5 + abs(np.random.normal(loc=20, scale=5))
+               t = np.random.rand() * 5 + abs(np.random.normal(loc=10, scale=5))
                print(f"sleep for {t}")
                time.sleep(t)
-               print(join(msg, args["cookie"]).read())
+               print("\n".join(process(msg, args["cookie"])))
       except Exception as e:
          print(e)
 
-def argsParse(argv, defValue=None)
+def argsParse(argv, defValue=None):
    args = defValue
    if not args:
       args = {}
