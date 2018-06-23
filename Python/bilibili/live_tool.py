@@ -93,9 +93,15 @@ class Live():
                self.conn.send(data)
 
          def recv_frame():
+
             try:
                return self.conn.recv_frame()
             except websocket._exceptions.WebSocketConnectionClosedException:
+               # reconnect
+               self.conn = self.__connect(roomid)
+               return self.conn.recv_frame()
+            except ConnectionResetError:
+               # reconnect
                self.conn = self.__connect(roomid)
                return self.conn.recv_frame()
 

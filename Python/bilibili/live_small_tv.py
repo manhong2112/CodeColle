@@ -5,6 +5,8 @@ import json
 import numpy as np
 import time
 
+import threading
+
 def get_small_tv_list(roomid):
    url = f"https://api.live.bilibili.com/gift/v3/smalltv/check?roomid={roomid}"
    return ut.GET_json(url)["data"]["list"]
@@ -35,23 +37,27 @@ def process(msg, cookie):
    tv_list = get_small_tv_list(roomid)
    return [join(roomid, i["raffleId"], cookie).read().decode() for i in tv_list]
 
+def main0(msg, args):
+   print("\n".join(process(msg, args["cookie"])))
 
 def main(args):
    print(args["cookie"])
    room = live_tool.Live(184298).get_chat_room()
    while True:
-      msg = room.next()["content"]
       try:
-         msg = json.loads(msg)
+         msg = json.loads(room.next()["content"])
+         print(msg)
          if msg["cmd"] == "SYS_MSG" and msg["rep"] == 1 and msg["styleType"] == 2:
             print("small tv?")
-            print(msg)
-            if np.random.rand(1)[0] > 0.1:
-               t = np.random.rand() * 5 + abs(np.random.normal(loc=10, scale=5))
-               print(f"sleep for {t}")
-               time.sleep(t)
-               print("\n".join(process(msg, args["cookie"])))
+            t = np.random.rand() * 5 + abs(np.random.normal(loc=10, scale=5))
+            print(f"sleep for {t}")
+            threading.Timer(t, main0, (msg, args)).start()
+      except json.decoder.JSONDecodeError as _: # ignored
+         pass
       except Exception as e:
+         # 管他甚麼錯誤, 重啟就對了 (X
+         room = live_tool.Live(184298).get_chat_room()
+         print("reconnect chat room")
          print(e)
 
 def argsParse(argv, defValue=None):
@@ -66,6 +72,13 @@ def argsParse(argv, defValue=None):
          args[x[0]] = x[1]
    return args
 
+def signal_handler(signal, frame):
+   sys.exit(0)
+
 if __name__ == "__main__":
+   import signal
    import sys
+
+   signal.signal(signal.SIGINT, signal_handler)
+
    main(argsParse(sys.argv[1:]))

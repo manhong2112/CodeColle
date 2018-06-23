@@ -25,7 +25,7 @@ for i in range(0, 200000):
    output = [
       input_data # [6, 4]
    ]
-   output.append(act(output[0].dot(weight[0]))) # [6, 4] . [0]
+   output.append(act(output[0].dot(weight[0]))) # [6, 4] . [4, 1] = [6, 1]
 
    delta0 = (output_data - output[1]) * act(output[1], d=True) # [6, 1] * [6, 1] = [6. 1]
 
