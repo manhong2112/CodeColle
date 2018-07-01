@@ -47,7 +47,9 @@ def main(args):
       try:
          msg = json.loads(room.next()["content"])
          print(msg)
-         if msg["cmd"] == "SYS_MSG" and msg["rep"] == 1 and msg["styleType"] == 2:
+         if "cmd" in msg and msg["cmd"] == "SYS_MSG" and\
+            "rep" in msg and msg["rep"] == 1 and\
+            "styleType" in msg and msg["styleType"] == 2:
             print("small tv?")
             t = np.random.rand() * 5 + abs(np.random.normal(loc=10, scale=5))
             print(f"sleep for {t}")

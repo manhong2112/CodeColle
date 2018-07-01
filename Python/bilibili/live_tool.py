@@ -51,6 +51,8 @@ class Live():
 
       self.PLAYURL_URL = f"{PLAYURL_API}?cid={self.ROOM_ID}&quality=4&otype=json&platform=web"
 
+      self.chat_room = Live.ChatRoom(self.ROOM_ID)
+
    def get_live_status(self):
       self.raw = get_roominfo(self.ROOM_ID)
       return self.raw["data"]["live_status"]
@@ -73,10 +75,14 @@ class Live():
 
       @staticmethod
       def __connect(roomid):
-         conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
+         conn = websocket.create_connection("wss://tx-live-dmcmt-hk-01.chat.bilibili.com/sub")
          data =(f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode()
          conn.send(lchat.chatEncode(7, data))
          return conn
+
+      def reconnect(self):
+         self.conn = self.__connect(self.roomid)
+         return self.conn
 
       def __init__(self, roomid):
          self.roomid = roomid
@@ -89,21 +95,23 @@ class Live():
             try:
                self.conn.send(data)
             except websocket._exceptions.WebSocketConnectionClosedException:
-               self.conn = self.__connect(roomid)
-               self.conn.send(data)
+               self.reconnect()
+            except ConnectionResetError:
+               self.reconnect()
+            except TimeoutError:
+               self.reconnect()
+            self.conn.send(data)
 
          def recv_frame():
-
             try:
                return self.conn.recv_frame()
             except websocket._exceptions.WebSocketConnectionClosedException:
-               # reconnect
-               self.conn = self.__connect(roomid)
-               return self.conn.recv_frame()
+               self.reconnect()
             except ConnectionResetError:
-               # reconnect
-               self.conn = self.__connect(roomid)
-               return self.conn.recv_frame()
+               self.reconnect()
+            except TimeoutError:
+               self.reconnect()
+            return self.conn.recv_frame()
 
          def recvDanmaku():
             while True:
@@ -142,7 +150,7 @@ class Live():
          self.conn.close()
 
    def get_chat_room(self):
-      return Live.ChatRoom(self.ROOM_ID)
+      return self.chat_room
 
 
 def get_html(url):

@@ -47,12 +47,12 @@ def arrayPadTo(length, arr):
 def keepSocketLife(socket):
    while True:
       time.sleep(30)
-      socket.send(chatEncode(2, b'[object Object]'))  # ??? i don't know why, maybe it just a bug?
+      socket.send(chatEncode(2, b'[object Object]'))  # ??? i don't know why, maybe it is a bug?
 
 
 def main(roomid):
    import websocket
-   conn = websocket.create_connection("ws://broadcastlv.chat.bilibili.com:2244/sub")
+   conn = websocket.create_connection("wss://tx-live-dmcmt-hk-01.chat.bilibili.com/sub")
    data = chatEncode(7, (
        f'{{"uid":0,"roomid":{roomid},"protover":1,"platform":"web","clientver":"1.2.8"}}').encode())
    conn.send(data)
