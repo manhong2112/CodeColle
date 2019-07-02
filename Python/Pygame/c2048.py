@@ -3,11 +3,8 @@ from copy import deepcopy as copy
 
 import pygame
 
-
 def calc_color(i):
     return 255 - (i ** 2 % 255)
-
-
 class Game(object):
     vector = {pygame.K_w: (0, 1),
               pygame.K_s: (0, -1),
@@ -29,22 +26,17 @@ class Game(object):
 
         if loc_list:
             if self.recently_block == self.block:
-                return True
+               return True
         else:
             return self.movable()
 
         loc = random.choice(loc_list)
         self.block[loc[0]][loc[1]] = random.choice((2, 2, 4))
         return True
-        pass
 
     def end(self):
         self.print()
-        print("# END #")
-        print("# Your Score is: {0} #".format(self.score()))
-        input("Enter to continue...")
         exit()
-        pass
 
     def move(self, direction, is_check=False):
         cache = copy(self.block)
@@ -68,7 +60,7 @@ class Game(object):
         pass
 
     def movable(self):
-        for i in (pygame.K_w, pygame.K_a, pygame.K_s, pygame.K_d):
+        for i in (pygame.K_w,pygame.K_a, pygame.K_s, pygame.K_d):
             if self.move(i, True):
                 return True
         return False
@@ -86,7 +78,7 @@ class Game(object):
                     v = self.block[x][y]
                     pygame.draw.rect(
                             display,
-                            (calc_color(v ** 2), calc_color(v ** 3), calc_color(v ** 5)),  # color
+                            (calc_color((v - 1) ** 2), calc_color((v - 1) * 3), calc_color((v - 1) * 5)),  # color
                             (120 * y, 120 * x, 120, 120))  # x, y ,width, height
                     display.blit(
                             _font.render(
@@ -106,62 +98,57 @@ class Game(object):
         return _f(self.block)
 
 
-pygame.init()
-screen = pygame.display.set_mode((480, 480), 0, 32)
-pygame.display.set_caption("2048")
+def main():
+   pygame.init()
+   screen = pygame.display.set_mode((480, 480), 0, 32)
+   pygame.display.set_caption("2048")
 
-font = pygame.font.SysFont("arial", 20)
+   font = pygame.font.SysFont("consolas", 20)
 
-game = Game()
-game.print(screen, font)
+   game = Game()
+   game.print(screen, font)
 
-k = ""
-finish = False
+   k = ""
+   finish = False
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
+   while True:
+      for event in pygame.event.get():
+         if event.type == pygame.QUIT:
+               pygame.quit()
+               exit()
+         if event.type == pygame.KEYDOWN:
+               if event.key == pygame.K_ESCAPE:
+                  pygame.quit()
+                  exit()
 
-            if event.key == pygame.K_r:
-                game.print(screen, font)
-                game = Game()
-                finish = False
+               if event.key == pygame.K_r:
+                  game.print(screen, font)
+                  game = Game()
+                  finish = False
 
-            if finish:
-                game.print(screen, font)
-                screen.blit(font.render(
-                                "You lose, total score is {}".format(game.score()),
-                                1,
-                                (30, 30, 30)
-                            ), (120, 240))
-                screen.blit(font.render(
-                                "press ESC to leave",
-                                1,
-                                (30, 30, 30)
-                            ), (128, 260))
-                screen.blit(font.render(
-                                "press R to restart",
-                                1,
-                                (30, 30, 30)
-                            ), (128, 280))
+               if finish:
+                  game.print(screen, font)
+                  (lambda f: f(f"You lose, total score is {game.score()}", 120, 240))(
+                     lambda t, x, y: screen.blit(font.render(t, 1, (30, 30, 30)), (x, y))
+                  )
+                  (lambda f: f(f"press ESC to leave", 128, 265))(
+                     lambda t, x, y: screen.blit(font.render(t, 1, (30, 30, 30)), (x, y))
+                  )
+                  (lambda f: f(f"press R to restart", 128, 285))(
+                     lambda t, x, y: screen.blit(font.render(t, 1, (30, 30, 30)), (x, y))
+                  )
+                  pygame.display.update()
+                  continue
 
-                pygame.display.update()
-                continue
+               k = event.key
+               try:
+                  game.move(k)
+                  finish = not game.next()
+               except KeyError:
+                  continue
+               finally:
+                  game.print(screen, font)
 
-            k = event.key
-            try:
-                game.move(k)
-                finish = not game.next()
-            except KeyError:
-                continue
-            finally:
-                game.print(screen, font)
-                k = ""
+      pygame.display.update()
 
-    pygame.display.update()
+main()
