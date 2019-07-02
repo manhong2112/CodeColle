@@ -1,6 +1,6 @@
 @echo off
 D:
-cd D:\manhong\WorkSpace\Code
+cd D:\palette\Workspace\Code
 git add .
 git commit -m "Script commit at %DATE:~0,10% %TIME:~0,8% UTC+8"
 git push github --force
