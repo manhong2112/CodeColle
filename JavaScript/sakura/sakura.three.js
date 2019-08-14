@@ -114,15 +114,15 @@ var sakura_main = (num, speed) => {
 
       s = x => 1 / (1 + Math.exp(-x));
 
-      while (counter < 50) {
-         counter += 1;
-         v = f3to2({ x: tryX, y: tryY, z: z });
-         tryY += 0.5 - s(v.y - y);
-      }
       while (counter < 100) {
          counter += 1;
          v = f3to2({ x: tryX, y: tryY, z: z });
-         tryX -= 0.5 - s(v.x - x);
+         tryY += (0.5 - s(v.y - y)) / 10;
+      }
+      while (counter < 200) {
+         counter += 1;
+         v = f3to2({ x: tryX, y: tryY, z: z });
+         tryX -= (0.5 - s(v.x - x)) / 10;
       }
 
       return { x: tryX, y: tryY, z: z };
@@ -131,7 +131,7 @@ var sakura_main = (num, speed) => {
    camera.position.z = 7;
    camera.lookAt(scene.position);
 
-   console.log(f2to3({ x: 0, y: 0, z: 7 }));
+   console.log(f2to3({ x: 0, y: 0, z: 2 }));
 
    var animate = function() {
       for (let s of arr) {
