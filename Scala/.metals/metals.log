@@ -5885,3 +5885,33 @@ INFO  no build target: using presentation compiler with only scala-library
 INFO  shutting down Metals
 INFO  started: Metals version 0.8.0 in workspace 'D:\palette\Workspace\Code\Scala'
 INFO  time: initialize in 1.47s
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+INFO  no build target: using presentation compiler with only scala-library
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+2月 15, 2020 10:50:56 上午 org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+警告: Unmatched cancel notification for request id 51
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build tool detected in workspace 'D:\palette\Workspace\Code\Scala'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
+WARN  no build target for: D:\palette\Workspace\Code\Scala\PixivDownload.scala
