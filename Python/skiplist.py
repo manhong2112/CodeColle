@@ -5,13 +5,11 @@ randstr = lambda n: ''.join(random.choices(string.ascii_lowercase + string.ascii
 
 
 class Node():
-
    def __init__(self, k, v, n, f=None):
       self.key = k
       self.value = v
-      self.next = n
-      self.forward = f
-
+      self.next: Node = n
+      self.forward: Node = f
    def clone(self):
       return Node(self.key, self.value, self.next, self.forward)
 
@@ -42,11 +40,11 @@ def skiplist(node, factor=0.5):
    return head
 
 
-def search(node, key):
+def search(node: Node, key):
    while node:
       if key == node.key:
          return node
-      if node.next and node.next.key > key:
+      if node.next and node.next.key >key:
          node = node.forward
       else:
          node = node.next
