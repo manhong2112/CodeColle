@@ -21,7 +21,7 @@ public class CLServer {
    static final PrintStream _out = System.out;
    static final PrintStream _err = System.err;
    static ClassLoader cl;
-   static final boolean DEBUG = true;
+   static final boolean DEBUG = false;
 
    public static void debug(String message) {
       if (DEBUG) {
@@ -54,7 +54,7 @@ public class CLServer {
          }
       });
 
-      cl = URLClassLoader.newInstance(new URL[] {}, CLTest.class.getClassLoader());
+      cl = URLClassLoader.newInstance(new URL[] {}, CLServer.class.getClassLoader());
       addURL(".");
 
       try (ServerSocket server = new ServerSocket(PORT)) {
@@ -108,7 +108,7 @@ public class CLServer {
          String data = in.readLine();
          debug(data);
          try {
-            CLTest.addURL(data);
+            CLServer.addURL(data);
          } catch (Error | Exception e) {
             e.printStackTrace(out);
          }
@@ -142,7 +142,7 @@ public class CLServer {
             }
          }
          if (name != null) {
-            CLTest.callMain(addTempURL(cps.toArray(new String[] {})), name, args.toArray(new String[] {}), out);
+            CLServer.callMain(addTempURL(cps.toArray(new String[] {})), name, args.toArray(new String[] {}), out);
          } else {
             out.println("E> Missing class name");
             error("Missing class name");
@@ -166,7 +166,7 @@ public class CLServer {
 
       ClassLoader newCl = URLClassLoader.newInstance(Arrays.stream(s).map(x -> {
          try {
-            info("Adding temp url" + x);
+            info("Adding temp url " + x);
             return new File(x).toURI().toURL();
          } catch (MalformedURLException e) {
             throw new RuntimeException(e);
@@ -190,3 +190,5 @@ public class CLServer {
       }
    }
 }
+
+// =' ω '=
