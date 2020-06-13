@@ -1,0 +1,68 @@
+2020.05.13 22:13:37 INFO  started: Metals version 0.9.0 in workspace 'D:\palette\Workspace\qqbot\waifu'
+2020.05.13 22:13:41 INFO  time: initialize in 3.76s
+2020.05.13 22:13:42 INFO  no build target: using presentation compiler with only scala-library
+2020.05.13 22:14:22 INFO  running 'C:\Program Files\Zulu\zulu-11\bin\java -Djline.terminal=jline.UnsupportedTerminal -Dsbt.log.noformat=true -Dfile.encoding=UTF-8 -jar C:\Users\palette\AppData\Local\Temp\metals5013453903394405795\sbt-launch.jar -Dbloop.export-jar-classifiers=sources bloopInstall'
+2020.05.13 22:14:39 INFO  [info] Loading settings for project waifu-build from metals.sbt,plugins.sbt ...
+2020.05.13 22:14:41 INFO  [info] Loading project definition from D:\palette\Workspace\qqbot\waifu\project
+2020.05.13 22:14:43 INFO  [info] Updating ProjectRef(uri("file:/D:/palette/Workspace/qqbot/waifu/project/"), "waifu-build")...
+2020.05.13 22:15:15 INFO  [info] downloading https://repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar ...
+2020.05.13 22:15:15 INFO  [info] downloading https://repo1.maven.org/maven2/com/google/code/gson/gson/2.7/gson-2.7.jar ...
+2020.05.13 22:15:15 INFO  [info] downloading https://repo1.maven.org/maven2/ch/epfl/scala/sbt-bloop_2.12_1.0/1.4.0-RC1-229-b7c15aa9/sbt-bloop-1.4.0-RC1-229-b7c15aa9.jar ...
+2020.05.13 22:15:17 INFO  [info] 	[SUCCESSFUL ] com.google.code.findbugs#jsr305;3.0.2!jsr305.jar (1861ms)
+2020.05.13 22:15:17 INFO  [info] 	[SUCCESSFUL ] com.google.code.gson#gson;2.7!gson.jar (2077ms)
+2020.05.13 22:15:20 INFO  [info] 	[SUCCESSFUL ] ch.epfl.scala#sbt-bloop;1.4.0-RC1-229-b7c15aa9!sbt-bloop.jar (4838ms)
+2020.05.13 22:15:20 INFO  [info] Done updating.
+2020.05.13 22:15:25 INFO  [info] Loading settings for project waifu from build.sbt ...
+2020.05.13 22:15:27 INFO  [info] Set current project to waifu (in build file:/D:/palette/Workspace/qqbot/waifu/)
+2020.05.13 22:15:27 INFO  [error] java.lang.RuntimeException: The sbt-dotty plugin cannot work with this version of sbt (1.2.3), sbt >=1.2.7 is required.
+2020.05.13 22:15:27 INFO  [error] 	at scala.sys.package$.error(package.scala:27)
+2020.05.13 22:15:27 INFO  [error] 	at dotty.tools.sbtplugin.DottyPlugin$.$anonfun$globalSettings$2(DottyPlugin.scala:161)
+2020.05.13 22:15:27 INFO  [error] 	at scala.Function1.$anonfun$andThen$1(Function1.scala:52)
+2020.05.13 22:15:27 INFO  [error] 	at scala.Function1.$anonfun$andThen$1(Function1.scala:52)
+2020.05.13 22:15:27 INFO  [error] 	at scala.Function1.$anonfun$compose$1(Function1.scala:44)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.Project$.setProject(Project.scala:485)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.BuiltinCommands$.doLoadProject(Main.scala:840)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.BuiltinCommands$.$anonfun$loadProjectImpl$2(Main.scala:800)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.Command$.$anonfun$applyEffect$4(Command.scala:142)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.Command$.$anonfun$applyEffect$2(Command.scala:137)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.Command$.process(Command.scala:181)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.processCommand(MainLoop.scala:151)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.$anonfun$next$2(MainLoop.scala:139)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.State$$anon$1.runCmd$1(State.scala:246)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.State$$anon$1.process(State.scala:250)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.$anonfun$next$1(MainLoop.scala:139)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.internal.util.ErrorHandling$.wideConvert(ErrorHandling.scala:16)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.next(MainLoop.scala:139)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.run(MainLoop.scala:132)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.$anonfun$runWithNewLog$1(MainLoop.scala:110)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.io.Using.apply(Using.scala:22)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.runWithNewLog(MainLoop.scala:104)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.runAndClearLast(MainLoop.scala:59)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.runLoggedLoop(MainLoop.scala:44)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.MainLoop$.runLogged(MainLoop.scala:35)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.StandardMain$.runManaged(Main.scala:138)
+2020.05.13 22:15:27 INFO  [error] 	at sbt.xMain.run(Main.scala:89)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Launch$$anonfun$run$1.apply(Launch.scala:109)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Launch$.withContextLoader(Launch.scala:128)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Launch$.run(Launch.scala:109)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Launch$$anonfun$apply$1.apply(Launch.scala:35)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Launch$.launch(Launch.scala:117)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Launch$.apply(Launch.scala:18)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Boot$.runImpl(Boot.scala:56)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Boot$.main(Boot.scala:18)
+2020.05.13 22:15:27 INFO  [error] 	at xsbt.boot.Boot.main(Boot.scala)
+2020.05.13 22:15:27 INFO  Project loading failed: (r)etry, (q)uit, (l)ast, or (i)gnore? [error] The sbt-dotty plugin cannot work with this version of sbt (1.2.3), sbt >=1.2.7 is required.
+2020.05.13 22:15:27 INFO  [error] Use 'last' for the full log.
+2020.05.13 22:15:28 INFO  build tool exit: 1
+2020.05.13 22:15:28 INFO  time: ran 'sbt bloopInstall' in 1m5s
+2020.05.13 22:15:28 ERROR sbt command failed: C:\Program Files\Zulu\zulu-11\bin\java -Djline.terminal=jline.UnsupportedTerminal -Dsbt.log.noformat=true -Dfile.encoding=UTF-8 -jar C:\Users\palette\AppData\Local\Temp\metals5013453903394405795\sbt-launch.jar -Dbloop.export-jar-classifiers=sources bloopInstall
+2020.05.13 22:15:44 WARN  code navigation does not work for the file 'D:\palette\Workspace\Code\Scala\PixivDownload.sc' because it doesn't belong to a build target.
+2020.06.12 08:30:34 INFO  started: Metals version 0.9.0 in workspace 'D:\palette\Workspace\qqbot\waifu'
+2020.06.12 08:30:36 INFO  time: initialize in 1.75s
+2020.06.12 08:30:41 WARN  no build tool detected in workspace 'D:\palette\Workspace\qqbot\waifu'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.06.12 08:30:41 INFO  no build target: using presentation compiler with only scala-library
+6月 12, 2020 8:37:56 上午 org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+資訊: Unsupported notification method: $/setTraceNotification
+2020.06.12 08:42:23 WARN  no build tool detected in workspace 'D:\palette\Workspace\qqbot\waifu'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.06.12 08:42:23 WARN  no build tool detected in workspace 'D:\palette\Workspace\qqbot\waifu'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. 
+2020.06.12 23:39:19 INFO  shutting down Metals
